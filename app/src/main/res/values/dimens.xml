@@ -2,4 +2,5 @@
 <resources>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="nav_header_title_size">40sp</dimen>
+    <dimen name="nav_header_textview_margin">8dp</dimen>
 </resources>

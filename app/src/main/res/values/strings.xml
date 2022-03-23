@@ -4,9 +4,24 @@
     <string name="icon_listview_text">List View</string>
     <string name="icon_workmates_text">Workmates</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <string name="hungry">I\'m hungry!</string>
     <string name="available_workmates">Available workmates</string>
+
+    <string name="error_not_connected">You must log in !</string>
+    <string name="error_authentication_canceled">loging in canceled</string>
+    <string name="error_no_internet">Check your internet connexion !</string>
+    <string name="error_unknown_error">Unkown error has happened</string>
+    <string name="connection_succeed">logged successfully !</string>
+    <string name="disconnected">you are now disconnected !</string>
+
+    <string name="info_no_email_found">No mail adress</string>
+    <string name="info_no_username_found">No username</string>
+
+    <string name="facebook_application_id">258185523195399</string>
+    <string name="fb_login_protocol_scheme">fb258185523195399</string>
+
+
 </resources>
