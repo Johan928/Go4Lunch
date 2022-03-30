@@ -28,7 +28,7 @@ import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
 import com.example.go4lunch.manager.UserManager;
 import com.example.go4lunch.ui.fragments.ListViewFragment;
-import com.example.go4lunch.ui.fragments.MapViewFragment;
+import com.example.go4lunch.ui.fragments.MapsViewFragment;
 import com.example.go4lunch.ui.fragments.WorkmatesFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -58,19 +58,22 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = activityMainBinding.getRoot();
         setContentView(view);
-
-        configureBottomNavigationView();
-        configureToolBar();
-        configureDrawerLayout();
-        configureNavigationView();
-
+        configureActivity();
         startSignInActivity();
+
 
         try {
             configureMapViewFragment();
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
+    }
+
+    private void configureActivity() {
+        configureBottomNavigationView();
+        configureToolBar();
+        configureDrawerLayout();
+        configureNavigationView();
     }
 
     private void startSignInActivity() {
@@ -121,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
                     } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                         showSnackBar(getString(R.string.error_unknown_error));
                     }
+
+                }
+                if (!userManager.isCurrentUserLogged()) {
+                    startSignInActivity();
                 }
             }
         }
@@ -178,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (user.getPhotoUrl() != null) {
                 setProfilePicture(user.getPhotoUrl(), header);
+                Log.d(TAG, "updateUiWithUserData: " + user.getPhotoUrl().toString());
             }
             setTextUserData(user, header);
         }
@@ -248,9 +256,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void configureMapViewFragment() throws IllegalAccessException, InstantiationException {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, MapViewFragment.class.newInstance(), null)
+                .replace(R.id.fragment_container,MapsViewFragment.class.newInstance(),null)
                 .setReorderingAllowed(true)
                 .commit();
+
+
     }
 
     private void configureListViewFragment() throws IllegalAccessException, InstantiationException {

@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 
 android {
     compileSdk 31
@@ -28,6 +30,7 @@ android {
         viewBinding true
     }
 
+
 }
 
 dependencies {
@@ -53,5 +56,10 @@ dependencies {
 
     //FACEBOOK
     implementation 'com.facebook.android:facebook-android-sdk:8.2.0'
+
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+
+
 
 }
