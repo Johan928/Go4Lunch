@@ -22,6 +22,7 @@
 
     <string name="facebook_application_id">258185523195399</string>
     <string name="fb_login_protocol_scheme">fb258185523195399</string>
+    <string name="permission_rationale_message">Access to location is necessary to use MapView.</string>
 
 
 </resources>

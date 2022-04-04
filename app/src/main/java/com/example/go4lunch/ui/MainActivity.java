@@ -2,6 +2,7 @@ package com.example.go4lunch.ui;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -42,15 +43,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final int RC_SIGN_IN = 123;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private ActivityMainBinding activityMainBinding;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
-    private UserManager userManager = UserManager.getInstance();
+    private final UserManager userManager = UserManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +66,6 @@ public class MainActivity extends AppCompatActivity {
         configureActivity();
         startSignInActivity();
 
-
-        try {
-            configureMapViewFragment();
-        } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-        }
     }
 
     private void configureActivity() {
@@ -98,14 +97,31 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        handleResponseAfterSignIn(requestCode, resultCode, data);
+        try {
+            handleResponseAfterSignIn(requestCode, resultCode, data);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE){
+            try {
+                configureMapViewFragment();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 
     private void showSnackBar(String message) {
         Snackbar.make(activityMainBinding.mainLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
+
+    private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) throws IllegalAccessException, InstantiationException {
 
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
@@ -114,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 showSnackBar(getString(R.string.connection_succeed));
                 updateUiWithUserData();
+                configureMapViewFragment();
             } else {
                 // ERRORS
                 if (response == null) {
@@ -255,12 +272,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configureMapViewFragment() throws IllegalAccessException, InstantiationException {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container,MapsViewFragment.class.newInstance(),null)
-                .setReorderingAllowed(true)
-                .commit();
+        //Check for permissions before going further
+        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, MapsViewFragment.class.newInstance(), null)
+                    .setReorderingAllowed(true)
+                    .commit();
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.permission_rationale_message), LOCATION_PERMISSION_REQUEST_CODE, perms);
+        }
 
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        try {
+            configureMapViewFragment();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this,perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
     }
 
     private void configureListViewFragment() throws IllegalAccessException, InstantiationException {
