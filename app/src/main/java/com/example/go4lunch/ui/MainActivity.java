@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private ActionBarDrawerToggle toggle;
     private final UserManager userManager = UserManager.getInstance();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         setContentView(view);
         configureActivity();
         startSignInActivity();
+
 
     }
 
@@ -275,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         //Check for permissions before going further
         String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         if (EasyPermissions.hasPermissions(this, perms)) {
+
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, MapsViewFragment.class.newInstance(), null)
                     .setReorderingAllowed(true)
@@ -296,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         try {
             configureMapViewFragment();
+
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
