@@ -22,21 +22,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
-import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.manager.UserManager;
+import com.example.go4lunch.repository.LocationRepository;
 import com.example.go4lunch.ui.fragments.ListViewFragment;
 import com.example.go4lunch.ui.fragments.MapsViewFragment;
 import com.example.go4lunch.ui.fragments.WorkmatesFragment;
-import com.example.go4lunch.viewmodels.MapsViewViewModel;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
-    private MapsViewViewModel mapsViewViewModel;
+    private LocationRepository locationRepository;
     private final UserManager userManager = UserManager.getInstance();
     final int yourLunch = R.id.activity_main_drawer_your_lunch;
     final int settings = R.id.activity_main_drawer_settings;
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         setContentView(view);
         configureActivity();
         startSignInActivity();
-        initViewModel();
+
 
     }
 
@@ -105,10 +105,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     }
 
-    private void initViewModel() {
-        mapsViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getApplicationContext())).get(MapsViewViewModel.class);
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -309,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         try {
+
             configureMapViewFragment();
 
         } catch (IllegalAccessException | InstantiationException e) {

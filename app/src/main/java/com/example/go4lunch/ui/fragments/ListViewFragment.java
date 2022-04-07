@@ -18,6 +18,7 @@ import com.example.go4lunch.Adapter.ListViewAdapter;
 import com.example.go4lunch.Models.GooglePlaces;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
+import com.example.go4lunch.viewmodels.ListViewViewModel;
 import com.example.go4lunch.viewmodels.MapsViewViewModel;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ListViewFragment extends Fragment {
     private ProgressBar progressBar;
     private LinearLayoutManager layoutManager;
     private final ArrayList<GooglePlaces.Results> googlePLacesList = new ArrayList<>();
-    MapsViewViewModel mapsViewViewModel;
+    private ListViewViewModel listViewViewModel;
     private ListViewAdapter adapter;
     private FragmentListViewBinding binding;
 
@@ -62,13 +63,14 @@ public class ListViewFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         adapter = new ListViewAdapter(getContext(), googlePLacesList);
         recyclerView.setAdapter(adapter);
-        mapsViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(requireActivity())).get(MapsViewViewModel.class);
-
+     //   mapsViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(requireActivity())).get(MapsViewViewModel.class);
+ViewModelFactory vm = ViewModelFactory.getInstance();
+        listViewViewModel = new ViewModelProvider(this,vm).get(ListViewViewModel.class);
 
     }
 
     private void getPlaces() {
-        mapsViewViewModel.getNearBySearchLiveData().observe(requireActivity(), results -> {
+        listViewViewModel.getNearBySearchLiveData().observe(requireActivity(), results -> {
             progressBar.setVisibility(View.GONE);
             Log.d(TAG, "onChanged: " + results.size());
             googlePLacesList.clear();

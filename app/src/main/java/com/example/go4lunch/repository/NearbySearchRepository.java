@@ -18,12 +18,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MapRepository {
+public class NearbySearchRepository {
 
     private final MapsAPI mapsAPI;
 
 
-    public MapRepository() {
+    public NearbySearchRepository() {
         Log.d(TAG, "MapRepository: ");
         mapsAPI = RetrofitRequest.getRetrofitInstance().create(MapsAPI.class);
     }

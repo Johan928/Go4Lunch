@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,8 +22,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.go4lunch.Models.GooglePlaces;
-import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.R;
+import com.example.go4lunch.factory.ViewModelFactory;
+import com.example.go4lunch.viewmodels.LocationViewModel;
 import com.example.go4lunch.viewmodels.MapsViewViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -43,6 +45,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location myLocation;
     private MapsViewViewModel mapsViewViewModel;
+    private LocationViewModel locationViewModel;
     private ViewModelFactory viewModelFactory;
     private ArrayList<GooglePlaces.Results> googlePlaces = new ArrayList<>();
     private GoogleMap googleMap;
@@ -60,8 +63,16 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mapsViewViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance(getContext())).get(MapsViewViewModel.class);
-
+        ViewModelFactory vmf = ViewModelFactory.getInstance();
+        mapsViewViewModel = new ViewModelProvider(this, vmf).get(MapsViewViewModel.class);
+        locationViewModel = new ViewModelProvider(this, vmf).get(LocationViewModel.class);
+        locationViewModel.startLocationRequest();
+        locationViewModel.getLocationLiveData().observe(requireActivity(), new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+                Log.d(TAG, "location: " + location.getLatitude() + "  " + location.getLongitude());
+            }
+        });
 
     }
 
