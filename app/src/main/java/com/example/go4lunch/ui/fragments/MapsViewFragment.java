@@ -60,7 +60,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mapsViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getContext())).get(MapsViewViewModel.class);
+        mapsViewViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance(getContext())).get(MapsViewViewModel.class);
 
 
     }
@@ -88,7 +88,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void getPoi() {
 
-        mapsViewViewModel.getNearBySearchLiveData().observe(getActivity(), new Observer<List<GooglePlaces.Results>>() {
+        mapsViewViewModel.getNearBySearchLiveData().observe(getViewLifecycleOwner(), new Observer<List<GooglePlaces.Results>>() {
             @Override
             public void onChanged(List<GooglePlaces.Results> results) {
                 googlePlaces.addAll(results);

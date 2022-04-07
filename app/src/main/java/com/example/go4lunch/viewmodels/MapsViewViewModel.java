@@ -1,6 +1,10 @@
 package com.example.go4lunch.viewmodels;
 
-import androidx.lifecycle.LiveData;
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.go4lunch.Models.GooglePlaces;
@@ -10,22 +14,25 @@ import java.util.List;
 
 public class MapsViewViewModel extends ViewModel {
 
-    private MapRepository mapRepository;
+    private final MapRepository mapRepository;
 
-    private LiveData<List<GooglePlaces.Results>> getNearBySearchLiveData;
+    private MutableLiveData<List<GooglePlaces.Results>> getNearBySearchLiveData = new MutableLiveData<>();
 
-    public MapsViewViewModel(MapRepository mapRepository) {
+    public MapsViewViewModel(MapRepository mapRepository, MutableLiveData<List<GooglePlaces.Results>> getNearBySearchLiveData) {
+        this.getNearBySearchLiveData = getNearBySearchLiveData;
 
         this.mapRepository = new MapRepository();
-        this.getNearBySearchLiveData = mapRepository.getNearBySearch();
+        Log.d(TAG, "MapsViewViewModel: activated");
 
     }
 
 
-    public LiveData<List<GooglePlaces.Results>> getNearBySearchLiveData() {
+    public MutableLiveData<List<GooglePlaces.Results>> getNearBySearchLiveData() {
         return getNearBySearchLiveData;
     }
 
-
+public void populateLiveData() {
+        getNearBySearchLiveData.setValue(mapRepository.getNearBySearch().getValue());
+}
 
 }

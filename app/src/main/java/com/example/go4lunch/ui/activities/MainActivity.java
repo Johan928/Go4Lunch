@@ -1,4 +1,4 @@
-package com.example.go4lunch.ui;
+package com.example.go4lunch.ui.activities;
 
 import static android.content.ContentValues.TAG;
 
@@ -22,15 +22,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
+import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.manager.UserManager;
 import com.example.go4lunch.ui.fragments.ListViewFragment;
 import com.example.go4lunch.ui.fragments.MapsViewFragment;
 import com.example.go4lunch.ui.fragments.WorkmatesFragment;
+import com.example.go4lunch.viewmodels.MapsViewViewModel;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -49,24 +52,30 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final int RC_SIGN_IN = 123;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private ActivityMainBinding activityMainBinding;
+    private ActivityMainBinding binding;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+    private MapsViewViewModel mapsViewViewModel;
     private final UserManager userManager = UserManager.getInstance();
-
+    final int yourLunch = R.id.activity_main_drawer_your_lunch;
+    final int settings = R.id.activity_main_drawer_settings;
+    final int logOut = R.id.activity_main_drawer_logout;
+    final int pageMapView = R.id.page_mapview;
+    final int pageListView = R.id.page_listview;
+    final int pageWorkmates = R.id.page_workmates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
-        View view = activityMainBinding.getRoot();
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
         setContentView(view);
         configureActivity();
         startSignInActivity();
-
+        initViewModel();
 
     }
 
@@ -96,22 +105,23 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     }
 
+    private void initViewModel() {
+        mapsViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(getApplicationContext())).get(MapsViewViewModel.class);
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             handleResponseAfterSignIn(requestCode, resultCode, data);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
-        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE){
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             try {
                 configureMapViewFragment();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
+            } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
@@ -119,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
 
     private void showSnackBar(String message) {
-        Snackbar.make(activityMainBinding.mainLayout, message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(binding.mainLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
 
@@ -160,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void configureToolBar() {
-        toolbar = activityMainBinding.toolbar;
+        toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -169,24 +179,25 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void configureDrawerLayout() {
-        this.drawerLayout = activityMainBinding.activityMainDrawerLayout;
+        this.drawerLayout = binding.activityMainDrawerLayout;
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
 
     private void configureNavigationView() {
-        this.navigationView = activityMainBinding.activityMainNavView;
+        this.navigationView = binding.activityMainNavView;
+
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
 
-                case R.id.activity_main_drawer_your_lunch:
+                case yourLunch:
                     Toast.makeText(getApplicationContext(), "TEST " + drawerLayout.getDrawingTime(), Toast.LENGTH_SHORT).show();
                     break;
-                case R.id.activity_main_drawer_settings:
+                case settings:
                     Toast.makeText(getApplicationContext(), "SETTINGS", Toast.LENGTH_SHORT).show();
                     break;
-                case R.id.activity_main_drawer_logout:
+                case logOut:
                     userManager.signOut(this);
                     startSignInActivity();
             }
@@ -222,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 getString(R.string.info_no_email_found) : user.getEmail();
         String username = TextUtils.isEmpty(user.getDisplayName()) ?
                 getString(R.string.info_no_username_found) : user.getDisplayName();
-        TextView username_Textview = (TextView) view.findViewById(R.id.textview_username);
+        TextView username_Textview = view.findViewById(R.id.textview_username);
         username_Textview.setText(username);
-        TextView usermail_Textview = (TextView) view.findViewById(R.id.textview_user_mail);
+        TextView usermail_Textview = view.findViewById(R.id.textview_user_mail);
         usermail_Textview.setText(email);
     }
 
@@ -239,10 +250,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void configureBottomNavigationView() {
-        bottomNavigationView = activityMainBinding.bottomNavigation;
+        bottomNavigationView = binding.bottomNavigation;
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.page_mapview:
+                case pageMapView:
                     try {
                         configureMapViewFragment();
                         toolbar.setTitle(R.string.hungry);
@@ -250,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         e.printStackTrace();
                     }
                     return true;
-                case R.id.page_listview:
+                case pageListView:
                     try {
                         configureListViewFragment();
                         toolbar.setTitle(R.string.hungry);
@@ -258,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         e.printStackTrace();
                     }
                     return true;
-                case R.id.page_workmates:
+                case pageWorkmates:
                     try {
                         configureWorkmatesFragment();
                         toolbar.setTitle(R.string.available_workmates);
@@ -300,9 +311,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         try {
             configureMapViewFragment();
 
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
     }
