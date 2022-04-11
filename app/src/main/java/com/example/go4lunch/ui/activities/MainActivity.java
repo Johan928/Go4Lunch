@@ -28,15 +28,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
 import com.example.go4lunch.manager.UserManager;
-import com.example.go4lunch.repository.LocationRepository;
-import com.example.go4lunch.ui.fragments.ListViewFragment;
-import com.example.go4lunch.ui.fragments.MapsViewFragment;
-import com.example.go4lunch.ui.fragments.WorkmatesFragment;
+import com.example.go4lunch.listview.ListViewFragment;
+import com.example.go4lunch.mapsView.MapsViewFragment;
+import com.example.go4lunch.workmatesview.WorkmatesFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -58,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
-    private LocationRepository locationRepository;
     private final UserManager userManager = UserManager.getInstance();
     final int yourLunch = R.id.activity_main_drawer_your_lunch;
     final int settings = R.id.activity_main_drawer_settings;
@@ -72,11 +68,47 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
+
+/*
+        mapsViewViewModel2 = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MapsViewViewModel2.class);
+
+        liveData = mapsViewViewModel2.getMediatorLiveData();
+
+        liveData.observe(this, new Observer<MapsViewState>() {
+            @Override
+            public void onChanged(MapsViewState mapsViewState) {
+                if (mapsViewState != null) {
+//                   Log.d(TAG, "onChangedAA: " + mapsViewState.getPlaces().size());
+                }
+                if (mapsViewState != null) {
+                    if (mapsViewState.getLocation() != null) {
+                        Log.d(TAG, "onChangedDD: " + mapsViewState.getLocation().getLatitude());
+                    } else {
+                        Log.d(TAG, "onChangedLocation: NULL");
+                    }
+
+                }
+
+            }
+        });*/
+
         setContentView(view);
         configureActivity();
         startSignInActivity();
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // locationRepository.stopLocationRequest();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        locationRepository.startLocationRequest();
     }
 
     private void configureActivity() {
@@ -109,18 +141,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         try {
             handleResponseAfterSignIn(requestCode, resultCode, data);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
-        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            try {
-                configureMapViewFragment();
-            } catch (IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
 
@@ -128,17 +155,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         Snackbar.make(binding.mainLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) throws IllegalAccessException, InstantiationException {
 
-        IdpResponse response = IdpResponse.fromResultIntent(data);
 
         if (requestCode == RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
             // SUCCESS
             if (resultCode == RESULT_OK) {
                 showSnackBar(getString(R.string.connection_succeed));
                 updateUiWithUserData();
                 configureMapViewFragment();
+
             } else {
                 // ERRORS
                 if (response == null) {
@@ -155,6 +182,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     startSignInActivity();
                 }
             }
+        } else if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            try {
+                configureMapViewFragment();
+            } catch (IllegalAccessException | InstantiationException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -162,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Nullable
     @Override
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+
         return super.onCreateView(parent, name, context, attrs);
+
     }
 
     private void configureToolBar() {
@@ -188,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             switch (item.getItemId()) {
 
                 case yourLunch:
+
+                    //Log.d(TAG, "onChanged: " + myLocation.getLatitude());
+
                     Toast.makeText(getApplicationContext(), "TEST " + drawerLayout.getDrawingTime(), Toast.LENGTH_SHORT).show();
                     break;
                 case settings:

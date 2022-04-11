@@ -1,4 +1,4 @@
-package com.example.go4lunch.Models;
+package com.example.go4lunch.model;
 
 import java.util.List;
 

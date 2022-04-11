@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +19,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.go4lunch.Models.GooglePlaces;
 import com.example.go4lunch.R;
+import com.example.go4lunch.model.GooglePlaces;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewAdapter.ViewHolder> {
 
     private final Context context;
     ArrayList<GooglePlaces.Results> googlePlacesList;
+    private LatLng myPosition;
 
     public static final DiffUtil.ItemCallback<GooglePlaces.Results> DIFF_CALLBACK = new DiffUtil.ItemCallback<GooglePlaces.Results>() {
         @Override
@@ -41,10 +45,11 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         }
     };
 
-    public ListViewAdapter(Context context, ArrayList<GooglePlaces.Results> googlePlacesArrayList) {
+    public ListViewAdapter(Context context, ArrayList<GooglePlaces.Results> googlePlacesArrayList, LatLng myPosition) {
         super(DIFF_CALLBACK);
         this.context = context;
         this.googlePlacesList = googlePlacesArrayList;
+        this.myPosition = myPosition;
     }
 
     @NonNull
@@ -59,12 +64,18 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         GooglePlaces.Results googlePlaces = googlePlacesList.get(position);
         holder.textview_name.setText(googlePlaces.getName());
         holder.textview_closing_hour.setText(googlePlaces.getTypes().get(0));
+        float[] results = new float[1];
 
+        Location.distanceBetween(myPosition.latitude, myPosition.longitude, googlePlaces.getGeometry().getLocation().getLat(), googlePlaces.getGeometry().getLocation().getLng(), results);
+        float distance = results[0];
+        holder.textview_distance.setText(new DecimalFormat("#").format (distance) + context.getString(R.string.mesuremetre));
         holder.textview_type_and_address.setText(googlePlaces.getPlace_id());
-        if (googlePlaces.getRating() != null){
+        if (googlePlaces.getRating() != null) {
             holder.textview_rating.setText(googlePlaces.getRating().toString());
 
-        } else {holder.textview_rating.setText(R.string.unknown_rating);}
+        } else {
+            holder.textview_rating.setText(R.string.unknown_rating);
+        }
         Glide.with(context)
                 .load(R.drawable.bowl_icon)
                 .apply(RequestOptions.circleCropTransform())

@@ -53,7 +53,8 @@
             android:layout_height="wrap_content"
             android:theme="@style/Theme.Go4LunchBottomNavigation"
             app:menu="@menu/bottom_navigation_menu" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/activity_main_nav_view"

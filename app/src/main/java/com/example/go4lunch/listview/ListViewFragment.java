@@ -1,4 +1,4 @@
-package com.example.go4lunch.ui.fragments;
+package com.example.go4lunch.listview;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.go4lunch.Adapter.ListViewAdapter;
-import com.example.go4lunch.Models.GooglePlaces;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
-import com.example.go4lunch.viewmodels.ListViewViewModel;
-import com.example.go4lunch.viewmodels.MapsViewViewModel;
+import com.example.go4lunch.mapsView.MapsViewFragment;
+import com.example.go4lunch.model.GooglePlaces;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -39,6 +39,7 @@ public class ListViewFragment extends Fragment {
     private ListViewAdapter adapter;
     private FragmentListViewBinding binding;
 
+
     public ListViewFragment() {
         // Required empty public constructor
     }
@@ -55,16 +56,15 @@ public class ListViewFragment extends Fragment {
     }
 
     private void init() {
-
+        LatLng myPosition = new LatLng(-21.2903707, 55.5057001);
         progressBar = binding.progressBar;
         recyclerView = binding.recyclerView;
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        adapter = new ListViewAdapter(getContext(), googlePLacesList);
+        adapter = new ListViewAdapter(getContext(), googlePLacesList, myPosition);
         recyclerView.setAdapter(adapter);
-     //   mapsViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(requireActivity())).get(MapsViewViewModel.class);
-ViewModelFactory vm = ViewModelFactory.getInstance();
+        ViewModelFactory vm = ViewModelFactory.getInstance();
         listViewViewModel = new ViewModelProvider(this,vm).get(ListViewViewModel.class);
 
     }
@@ -72,7 +72,7 @@ ViewModelFactory vm = ViewModelFactory.getInstance();
     private void getPlaces() {
         listViewViewModel.getNearBySearchLiveData().observe(requireActivity(), results -> {
             progressBar.setVisibility(View.GONE);
-            Log.d(TAG, "onChanged: " + results.size());
+            Log.d(TAG, "onChangedLV: " + results.size());
             googlePLacesList.clear();
             googlePLacesList.addAll(results);
             adapter.submitList(googlePLacesList);
@@ -91,6 +91,7 @@ ViewModelFactory vm = ViewModelFactory.getInstance();
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         init();
         getPlaces();
     }

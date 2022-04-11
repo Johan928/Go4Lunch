@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable-v24/ic_baseline_green_location_24.xml" value="0.124" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_dining_24.xml" value="0.2915" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.2915" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_not_listed_location_24.xml" value="0.18" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_person_outline_24.xml" value="0.124" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_list_view.xml" value="0.20462962962962963" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_map_view.xml" value="0.33" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_maps_view.xml" value="0.31354166666666666" />

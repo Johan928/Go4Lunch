@@ -1,8 +1,11 @@
-package com.example.go4lunch.repository;
+package com.example.go4lunch.repositories;
+
+import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -28,6 +31,7 @@ public class LocationRepository {
                 @Override
                 public void onLocationResult(@NonNull LocationResult locationResult) {
                     Location location = locationResult.getLastLocation();
+                    Log.d(TAG, "onLocationResult: " + location.getLatitude());
                     locationMutableLiveData.setValue(location);
 
                 }
@@ -55,5 +59,6 @@ public class LocationRepository {
     public LiveData<Location> getLocationLiveData() {
         return locationMutableLiveData;
     }
+
 
 }
