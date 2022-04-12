@@ -1,5 +1,7 @@
 package com.example.go4lunch.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class GooglePlaces {
@@ -36,9 +38,9 @@ public class GooglePlaces {
     }
 
     public static class Results {
-
+        @SerializedName("vicinity")
         private String vicinity;
-
+@SerializedName("user_ratings_total")
         private int user_ratings_total;
 
         private List<String> types;

@@ -2,6 +2,8 @@ package com.example.go4lunch.Adapter;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.go4lunch.BuildConfig.MAPS_API_KEY;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
@@ -76,10 +78,14 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         } else {
             holder.textview_rating.setText(R.string.unknown_rating);
         }
-        Glide.with(context)
-                .load(R.drawable.bowl_icon)
-                .apply(RequestOptions.circleCropTransform())
-                .into((holder.imageView));
+        if (googlePlaces.getPhotos() != null){
+            if (googlePlaces.getPhotos().size() > 0) {
+                Glide.with(context)
+                        .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + googlePlaces.getPhotos().get(0).getPhoto_reference() + "&key="+MAPS_API_KEY)
+                        .apply(RequestOptions.centerInsideTransform())
+                        .into((holder.imageView));
+            }
+        }
 
     }
 

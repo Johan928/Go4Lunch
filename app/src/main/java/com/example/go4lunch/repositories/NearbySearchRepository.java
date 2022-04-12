@@ -21,21 +21,18 @@ public class NearbySearchRepository {
     private final MapsAPI mapsAPI;
 
     private LocationRepository locationRepository;
-    private Location location;
+
 
     public NearbySearchRepository() {
 
-        this.locationRepository = new LocationRepository();
-        this.locationRepository.startLocationRequest();
-        this.location = locationRepository.getLocationLiveData().getValue();
-        mapsAPI = RetrofitRequest.getRetrofitInstance().create(MapsAPI.class);
+           mapsAPI = RetrofitRequest.getRetrofitInstance().create(MapsAPI.class);
     }
 
     //"-21.2903707,55.5057001" location.getLatitude() + "," + location.getLongitude()
-    public LiveData<List<GooglePlaces.Results>> getNearBySearch() {
+    public LiveData<List<GooglePlaces.Results>> getNearBySearch(Location location) {
         final MutableLiveData<List<GooglePlaces.Results>> data = new MutableLiveData<>();
-        this.location = locationRepository.getLocationLiveData().getValue();
-        mapsAPI.getNearBySearch("-21.2903707,55.5057001").enqueue(new Callback<GooglePlaces>() {
+
+        mapsAPI.getNearBySearch(location.getLatitude() + "," + location.getLongitude()).enqueue(new Callback<GooglePlaces>() {
             @Override
             public void onResponse(@NonNull Call<GooglePlaces> call, @NonNull Response<GooglePlaces> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -48,7 +45,6 @@ public class NearbySearchRepository {
                 data.setValue(null);
             }
         });
-        locationRepository.stopLocationRequest();
         return data;
     }
 }

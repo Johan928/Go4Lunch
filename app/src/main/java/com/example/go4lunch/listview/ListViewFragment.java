@@ -10,6 +10,8 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +40,7 @@ public class ListViewFragment extends Fragment {
     private ListViewViewModel listViewViewModel;
     private ListViewAdapter adapter;
     private FragmentListViewBinding binding;
+    private LiveData<ListViewViewState> livedata;
 
 
     public ListViewFragment() {
@@ -52,7 +55,6 @@ public class ListViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
     }
 
     private void init() {
@@ -66,19 +68,33 @@ public class ListViewFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         ViewModelFactory vm = ViewModelFactory.getInstance();
         listViewViewModel = new ViewModelProvider(this,vm).get(ListViewViewModel.class);
+        livedata = listViewViewModel.getListViewLiveData();
+        livedata.observe(getViewLifecycleOwner(), new Observer<ListViewViewState>() {
+            @Override
+            public void onChanged(ListViewViewState listViewViewState) {
+                progressBar.setVisibility(View.GONE);
 
-    }
+                if (listViewViewState.getLocation() != null) {
+                    Log.d(TAG, "onChangedLV: " + listViewViewState.getLocation().getLatitude());
+                } else {
+                    Log.d(TAG, "onChangedLV: NULL");
+                }
+                if (listViewViewState.getPlaces() != null) {
+                    Log.d(TAG, "onChangedLV: " + listViewViewState.getPlaces().size());
+                } else {
+                    Log.d(TAG, "onChangedLV: NULL");
+                }
+                if (listViewViewState.getPlaces() != null && listViewViewState.getLocation() != null) {
+                    googlePLacesList.clear();
+                    googlePLacesList.addAll(listViewViewState.getPlaces());
+                    adapter.submitList(googlePLacesList);
+                }
 
-    private void getPlaces() {
-        listViewViewModel.getNearBySearchLiveData().observe(requireActivity(), results -> {
-            progressBar.setVisibility(View.GONE);
-            Log.d(TAG, "onChangedLV: " + results.size());
-            googlePLacesList.clear();
-            googlePLacesList.addAll(results);
-            adapter.submitList(googlePLacesList);
-
+            }
         });
     }
+
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -91,8 +107,6 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         init();
-        getPlaces();
     }
 }
