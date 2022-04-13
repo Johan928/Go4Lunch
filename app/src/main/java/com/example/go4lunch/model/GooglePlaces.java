@@ -1,7 +1,5 @@
 package com.example.go4lunch.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class GooglePlaces {
@@ -38,9 +36,10 @@ public class GooglePlaces {
     }
 
     public static class Results {
-        @SerializedName("vicinity")
+        private Opening_hours opening_hours;
+       // @SerializedName("vicinity")
         private String vicinity;
-@SerializedName("user_ratings_total")
+        // @SerializedName("user_ratings_total")
         private int user_ratings_total;
 
         private List<String> types;
@@ -59,8 +58,6 @@ public class GooglePlaces {
 
         private List<Photos> photos;
 
-        private Opening_hours opening_hours;
-
         private String name;
 
         private String icon_mask_base_uri;
@@ -72,6 +69,13 @@ public class GooglePlaces {
         private Geometry geometry;
 
         private String business_status;
+        //  @SerializedName("website")
+        private String website;
+        // @SerializedName("formatted_phone_number")
+        private String formatted_phone_number;
+        // @SerializedName("formatted_address")
+        private String formatted_address;
+
 
         public String getVicinity() {
             return vicinity;
@@ -87,6 +91,13 @@ public class GooglePlaces {
 
         public void setUser_ratings_total(int user_ratings_total) {
             this.user_ratings_total = user_ratings_total;
+        }
+
+        public Opening_hours getOpening_hours() {
+            return opening_hours;
+        }
+        public void setOpening_hours(Opening_hours opening_hours){
+            this.opening_hours = opening_hours;
         }
 
         public List<String> getTypes() {
@@ -153,13 +164,6 @@ public class GooglePlaces {
             this.photos = photos;
         }
 
-        public Opening_hours getOpening_hours() {
-            return opening_hours;
-        }
-
-        public void setOpening_hours(Opening_hours opening_hours) {
-            this.opening_hours = opening_hours;
-        }
 
         public String getName() {
             return name;
@@ -207,6 +211,30 @@ public class GooglePlaces {
 
         public void setBusiness_status(String business_status) {
             this.business_status = business_status;
+        }
+
+        public String getWebsite() {
+            return website;
+        }
+
+        public void setWebsite(String website) {
+            this.website = website;
+        }
+
+        public String getFormatted_phone_number() {
+            return formatted_phone_number;
+        }
+
+        public void setFormatted_phone_number(String formatted_phone_number) {
+            this.formatted_phone_number = formatted_phone_number;
+        }
+
+        public String getFormatted_address() {
+            return formatted_address;
+        }
+
+        public void setFormatted_address(String formatted_address) {
+            this.formatted_address = formatted_address;
         }
     }
 
@@ -276,17 +304,18 @@ public class GooglePlaces {
     }
 
     public static class Opening_hours {
+                private boolean open_now;
 
-        private boolean open_now;
+                public boolean getOpen_now() {
+                    return open_now;
+                }
 
-        public boolean getOpen_now() {
-            return open_now;
-        }
+                public void setOpen_now(boolean open_now) {
+                    this.open_now = open_now;
+                }
 
-        public void setOpen_now(boolean open_now) {
-            this.open_now = open_now;
-        }
     }
+
 
     public static class Geometry {
 

@@ -23,8 +23,10 @@
     <string name="facebook_application_id">258185523195399</string>
     <string name="fb_login_protocol_scheme">fb258185523195399</string>
     <string name="permission_rationale_message">Access to location is necessary to use MapView.</string>
-    <string name="unknown_rating">unknown</string>
+    <string name="unknown_rating">Unknown</string>
     <string name="mesuremetre">m</string>
+    <string name="opened">Opened</string>
+    <string name="closed">Closed</string>
 
 
 </resources>

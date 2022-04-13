@@ -34,6 +34,7 @@
         android:layout_marginEnd="8dp"
         android:gravity="right"
         android:text="distance"
+        android:textColor="@android:color/darker_gray"
         app:layout_constraintEnd_toStartOf="@id/imageview"
         app:layout_constraintTop_toTopOf="parent" />
 </LinearLayout>
@@ -56,13 +57,15 @@
         app:layout_constraintEnd_toStartOf="@id/imageview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl1">
+
         <TextView
             android:id="@+id/textview_type_and_adress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="95"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="95"
+            android:maxLines="1"
             android:text="Type - Adress"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -72,10 +75,11 @@
             android:layout_weight="5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:minWidth="50dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:gravity="right"
-            android:text="()"
+            android:text="(0)"
             android:drawableStart="@drawable/ic_baseline_person_outline_24"
             app:layout_constraintEnd_toStartOf="@id/imageview"
             app:layout_constraintTop_toTopOf="parent" />
@@ -84,6 +88,7 @@
         android:id="@+id/rl3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
         app:layout_constraintEnd_toStartOf="@id/imageview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl2">
@@ -93,22 +98,41 @@
             android:layout_height="wrap_content"
             android:layout_weight="75"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="Closing hour"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/textview_rating"
             android:layout_weight="25"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:gravity="right"
             android:text="rating"
             app:layout_constraintEnd_toStartOf="@id/imageview"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
+        <ImageView
+            android:id="@+id/star1"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_baseline_star_24"/>
+        <ImageView
+            android:id="@+id/star2"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_baseline_star_24"/>
+        <ImageView
+            android:id="@+id/star3"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_baseline_star_24"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
