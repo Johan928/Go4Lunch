@@ -4,6 +4,165 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.DetailsActivity">
+    android:id="@+id/detailsActivity">
+
+
+    <ImageView
+        android:id="@+id/detailsImageViewRestaurantPhoto"
+        android:contentDescription="@string/restaurant_picture"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:contentDescription="@string/button_to_choose_your_daily_restaurant"
+        android:id="@+id/floatingActionButtonAddToFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+
+        app:backgroundTint="#FFFFFF"
+
+        app:layout_constraintBottom_toBottomOf="@+id/detailsImageViewRestaurantPhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsImageViewRestaurantPhoto" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infos_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/personnal_red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detailsImageViewRestaurantPhoto">
+
+        <TextView
+            android:id="@+id/textview_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/restaurant_name"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:contentDescription="@string/image_of_a_star_for_liked_restaurant"
+            android:id="@+id/imageview_liked_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/ic_baseline_star_24"
+            app:layout_constraintBottom_toBottomOf="@id/textview_name"
+            app:layout_constraintStart_toEndOf="@id/textview_name"
+            app:layout_constraintTop_toTopOf="@id/textview_name" />
+
+        <TextView
+            android:id="@+id/textview_adress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:text="@string/adress"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_name" />
+
+        <TextView
+            android:id="@+id/textview_opening_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/opening_hours"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textview_adress" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infos_layout">
+
+        <TextView
+
+            android:id="@+id/textView_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/call"
+            android:textColor="@color/personnal_red"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textView_like"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:drawableTopCompat="@drawable/ic_baseline_call_24"
+            app:drawableTint="@color/personnal_red" />
+
+        <TextView
+            android:id="@+id/textView_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/like"
+            android:textColor="@color/personnal_red"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textView_website"
+            app:layout_constraintStart_toEndOf="@id/textView_call"
+            app:layout_constraintTop_toTopOf="parent"
+            app:drawableTopCompat="@drawable/ic_baseline_star_24"
+            app:drawableTint="@color/personnal_red" />
+
+        <TextView
+            android:id="@+id/textView_website"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/website"
+            android:textColor="@color/personnal_red"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textView_like"
+            app:layout_constraintTop_toTopOf="parent"
+            app:drawableTopCompat="@drawable/ic_baseline_circle_24"
+            app:drawableTint="@color/personnal_red" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttons_layout"
+        tools:listitem="@layout/item_workmate" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

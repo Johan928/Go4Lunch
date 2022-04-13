@@ -27,6 +27,17 @@
     <string name="mesuremetre">m</string>
     <string name="opened">Opened</string>
     <string name="closed">Closed</string>
+    <string name="is_joining">is joining ?</string>
+    <string name="avatar">avatar</string>
+    <string name="adress">adress</string>
+    <string name="opening_hours">opening_hours</string>
+    <string name="restaurant_picture">restaurant_picture</string>
+    <string name="button_to_choose_your_daily_restaurant">button to choose your daily restaurant</string>
+    <string name="restaurant_name">Restaurant name</string>
+    <string name="image_of_a_star_for_liked_restaurant">image of a star for liked restaurant</string>
+    <string name="website">WEBSITE</string>
+    <string name="like">LIKE</string>
+    <string name="call">CALL</string>
 
 
 </resources>
