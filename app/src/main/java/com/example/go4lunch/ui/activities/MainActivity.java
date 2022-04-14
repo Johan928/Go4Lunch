@@ -68,31 +68,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
-
-/*
-        mapsViewViewModel2 = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MapsViewViewModel2.class);
-
-        liveData = mapsViewViewModel2.getMediatorLiveData();
-
-        liveData.observe(this, new Observer<MapsViewState>() {
-            @Override
-            public void onChanged(MapsViewState mapsViewState) {
-                if (mapsViewState != null) {
-//                   Log.d(TAG, "onChangedAA: " + mapsViewState.getPlaces().size());
-                }
-                if (mapsViewState != null) {
-                    if (mapsViewState.getLocation() != null) {
-                        Log.d(TAG, "onChangedDD: " + mapsViewState.getLocation().getLatitude());
-                    } else {
-                        Log.d(TAG, "onChangedLocation: NULL");
-                    }
-
-                }
-
-            }
-        });*/
-
         setContentView(view);
+
         configureActivity();
         startSignInActivity();
 

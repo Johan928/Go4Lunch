@@ -8,7 +8,7 @@
 
 
     <ImageView
-        android:id="@+id/detailsImageViewRestaurantPhoto"
+        android:id="@+id/detailsActivityImageViewRestaurantPhoto"
         android:contentDescription="@string/restaurant_picture"
         android:layout_width="match_parent"
         android:layout_height="250dp"
@@ -21,7 +21,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:contentDescription="@string/button_to_choose_your_daily_restaurant"
-        android:id="@+id/floatingActionButtonAddToFavorite"
+        android:id="@+id/detailsActivityFabSelectRestaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
@@ -31,9 +31,9 @@
 
         app:backgroundTint="#FFFFFF"
 
-        app:layout_constraintBottom_toBottomOf="@+id/detailsImageViewRestaurantPhoto"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsActivityImageViewRestaurantPhoto"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detailsImageViewRestaurantPhoto" />
+        app:layout_constraintTop_toBottomOf="@+id/detailsActivityImageViewRestaurantPhoto" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/infos_layout"
@@ -42,10 +42,10 @@
         android:background="@color/personnal_red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detailsImageViewRestaurantPhoto">
+        app:layout_constraintTop_toBottomOf="@id/detailsActivityImageViewRestaurantPhoto">
 
         <TextView
-            android:id="@+id/textview_name"
+            android:id="@+id/detailsActivityTextviewName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -63,12 +63,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:src="@drawable/ic_baseline_star_24"
-            app:layout_constraintBottom_toBottomOf="@id/textview_name"
-            app:layout_constraintStart_toEndOf="@id/textview_name"
-            app:layout_constraintTop_toTopOf="@id/textview_name" />
+            app:layout_constraintBottom_toBottomOf="@id/detailsActivityTextviewName"
+            app:layout_constraintStart_toEndOf="@id/detailsActivityTextviewName"
+            app:layout_constraintTop_toTopOf="@id/detailsActivityTextviewName" />
 
         <TextView
-            android:id="@+id/textview_adress"
+            android:id="@+id/detailsActivityTexviewAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
@@ -78,10 +78,10 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_name" />
+            app:layout_constraintTop_toBottomOf="@id/detailsActivityTextviewName" />
 
         <TextView
-            android:id="@+id/textview_opening_hours"
+            android:id="@+id/detailsActivityOpeningHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -89,7 +89,7 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_adress" />
+            app:layout_constraintTop_toBottomOf="@id/detailsActivityTexviewAddress" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

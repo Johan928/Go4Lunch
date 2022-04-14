@@ -1,6 +1,9 @@
 package com.example.go4lunch.repositories;
 
+import static android.content.ContentValues.TAG;
+
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -29,15 +32,14 @@ public class NearbySearchRepository {
     //"-21.2903707,55.5057001" home position fot test
     public LiveData<List<GooglePlaces.Results>> getNearBySearch(Location location) {
         final MutableLiveData<List<GooglePlaces.Results>> data = new MutableLiveData<>();
-
+        Log.d(TAG, "getNearBySearch: CALLED");
         mapsAPI.getNearBySearch(location.getLatitude() + "," + location.getLongitude()).enqueue(new Callback<GooglePlaces>() {
             @Override
             public void onResponse(@NonNull Call<GooglePlaces> call, @NonNull Response<GooglePlaces> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    //updateDatasWithAddittionnalsInformations(response.body().getResults());
+
                     data.setValue(response.body().getResults());
                     getNearBySearchLiveData.setValue(response.body().getResults());
-                   // Log.d(TAG, "Vicinity: " + response.body().getResults().get(0).getVicinity());
                 }
             }
 

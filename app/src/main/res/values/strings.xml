@@ -38,6 +38,9 @@
     <string name="website">WEBSITE</string>
     <string name="like">LIKE</string>
     <string name="call">CALL</string>
+    <string name="permission_rationale_call">Go4lunch need this permission to use this fonctionnality</string>
+    <string name="website_not_specified">Website not specified</string>
+    <string name="call_error">Call Error</string>
 
 
 </resources>

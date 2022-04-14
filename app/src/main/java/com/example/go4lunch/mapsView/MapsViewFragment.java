@@ -113,7 +113,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     private void updatePlacesOnMap(GoogleMap googleMap) {
         LatLng point;
         for (GooglePlaces.Results r : googlePlaces) {
-            Log.d(TAG, "updatePlacesOnMap: " + r.getGeometry().getLocation().getLat() + " - " + r.getName());
+           // Log.d(TAG, "updatePlacesOnMap: " + r.getGeometry().getLocation().getLat() + " - " + r.getName());
             point = new LatLng(r.getGeometry().getLocation().getLat(), r.getGeometry().getLocation().getLng());
             Marker marker;
             marker = googleMap.addMarker(new MarkerOptions()

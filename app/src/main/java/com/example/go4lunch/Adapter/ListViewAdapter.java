@@ -1,11 +1,13 @@
 package com.example.go4lunch.Adapter;
 
+import static android.content.ContentValues.TAG;
 import static com.example.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,17 +24,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
+import com.example.go4lunch.details.DetailsActivity;
 import com.example.go4lunch.model.GooglePlaces;
+import com.example.go4lunch.model.Place;
+import com.example.go4lunch.repositories.PlaceRepository;
+import com.example.go4lunch.retrofit.MapsAPI;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewAdapter.ViewHolder> {
 
     private final Context context;
     ArrayList<GooglePlaces.Results> googlePlacesList;
     private final LatLng myPosition;
+    private MapsAPI mapsAPI;
+    private PlaceRepository placeRepository;
 
     public static final DiffUtil.ItemCallback<GooglePlaces.Results> DIFF_CALLBACK = new DiffUtil.ItemCallback<GooglePlaces.Results>() {
         @Override
@@ -60,7 +74,7 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         return new ViewHolder(view);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GooglePlaces.Results googlePlaces = googlePlacesList.get(position);
@@ -121,7 +135,16 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
                         .into((holder.imageView));
             }
         }
-
+        holder.textview_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+                String placeId = googlePlaces.getPlace_id();
+                intent.putExtra("placeId",placeId);
+                Log.d(TAG, "onClick: " + placeId);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
@@ -156,6 +179,8 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
             star2 = itemView.findViewById(R.id.star2);
             star3 = itemView.findViewById(R.id.star3);
 
+
         }
+
     }
 }
