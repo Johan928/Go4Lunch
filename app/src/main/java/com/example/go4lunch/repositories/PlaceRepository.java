@@ -33,8 +33,7 @@ public class PlaceRepository {
             public void onResponse(Call<Place> call, Response<Place> response) {
                 if (response.isSuccessful() && response.body() !=null) {
                     data.setValue(response.body());
-                    Log.d(TAG, "PlaceOK: " + place_id);
-                    Log.d(TAG, "PlaceOK: " + response.body().getResult().getWebsite());
+
                 }
             }
 

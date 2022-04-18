@@ -27,7 +27,7 @@
     <string name="mesuremetre">m</string>
     <string name="opened">Opened</string>
     <string name="closed">Closed</string>
-    <string name="is_joining">is joining ?</string>
+    <string name="is_joining">\u0020 is joining </string>
     <string name="avatar">avatar</string>
     <string name="adress">adress</string>
     <string name="opening_hours">opening_hours</string>

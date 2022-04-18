@@ -25,11 +25,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
-        android:backgroundTint="#FFFFFF"
         android:clickable="true"
         android:focusable="true"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_baseline_arrow_circle_up_24"
+        app:tint="@color/black"
+        app:maxImageSize="48dp"
 
-        app:backgroundTint="#FFFFFF"
 
         app:layout_constraintBottom_toBottomOf="@+id/detailsActivityImageViewRestaurantPhoto"
         app:layout_constraintEnd_toEndOf="parent"
@@ -156,6 +158,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_details"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

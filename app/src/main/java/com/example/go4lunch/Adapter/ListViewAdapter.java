@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,18 +24,16 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
 import com.example.go4lunch.details.DetailsActivity;
 import com.example.go4lunch.model.GooglePlaces;
-import com.example.go4lunch.model.Place;
 import com.example.go4lunch.repositories.PlaceRepository;
 import com.example.go4lunch.retrofit.MapsAPI;
+import com.example.go4lunch.user.User;
+import com.example.go4lunch.user.UserManager;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.annotations.SerializedName;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.List;
 
 public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewAdapter.ViewHolder> {
 
@@ -46,8 +42,15 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
     private final LatLng myPosition;
     private MapsAPI mapsAPI;
     private PlaceRepository placeRepository;
+    private UserManager userManager = UserManager.getInstance();
+    private int workmatesNumber;
+    private List<User> selectedRestaurantList;
+    private static final String SELECTED_RESTAURANT_FIELD = "selectedRestaurantPlaceId";
+    //
 
     public static final DiffUtil.ItemCallback<GooglePlaces.Results> DIFF_CALLBACK = new DiffUtil.ItemCallback<GooglePlaces.Results>() {
+
+
         @Override
         public boolean areItemsTheSame(@NonNull GooglePlaces.Results oldItem, @NonNull GooglePlaces.Results newItem) {
             return oldItem.getPlace_id().equals(newItem.getPlace_id());
@@ -60,11 +63,14 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         }
     };
 
-    public ListViewAdapter(Context context, ArrayList<GooglePlaces.Results> googlePlacesArrayList, LatLng myPosition) {
+    public ListViewAdapter(Context context, ArrayList<GooglePlaces.Results> googlePlacesArrayList, LatLng myPosition,List<User> selectedRestaurantList) {
         super(DIFF_CALLBACK);
         this.context = context;
         this.googlePlacesList = googlePlacesArrayList;
         this.myPosition = myPosition;
+        this.selectedRestaurantList = selectedRestaurantList;
+
+
     }
 
     @NonNull
@@ -75,9 +81,23 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
     }
 
 
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         GooglePlaces.Results googlePlaces = googlePlacesList.get(position);
+        workmatesNumber = 0;
+        for (User userSelectedRestaurant : selectedRestaurantList) {
+            /*if (selectedRestaurant.equals(googlePlaces.getPlace_id())) {
+                workmatesNumber +=1;
+            }*/
+            if (userSelectedRestaurant.getSelectedRestaurantPlaceId() != null && userSelectedRestaurant.getSelectedRestaurantPlaceId().equals(googlePlaces.getPlace_id())) {
+                workmatesNumber += 1;
+            }
+        }
+        StringBuilder stringBuilder2 = new StringBuilder();
+        stringBuilder2.append("(").append(String.valueOf(workmatesNumber)).append(")");
+        holder.textview_number_of_workmates.setText(stringBuilder2);
 
         holder.textview_name.setText(googlePlaces.getName()); // name
 
@@ -127,23 +147,23 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
             holder.star2.setVisibility(View.GONE);
             holder.star3.setVisibility(View.GONE);
         }
-        if (googlePlaces.getPhotos() != null) { // first available photo
-            if (googlePlaces.getPhotos().size() > 0) {
-                Glide.with(context)
-                        .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + googlePlaces.getPhotos().get(0).getPhoto_reference() + "&key=" + MAPS_API_KEY)
-                        .apply(RequestOptions.centerInsideTransform())
-                        .into((holder.imageView));
-            }
+        String url;
+        if (googlePlaces.getPhotos() != null) {
+            url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + googlePlaces.getPhotos().get(0).getPhoto_reference() + "&key=" + MAPS_API_KEY;
+            Glide.with(context)
+                    .load(url)
+                    .apply(RequestOptions.centerInsideTransform())
+                    .into(holder.imageView);
+        } else {
+            //On affiche une image par défaut
+            holder.imageView.setImageDrawable(context.getDrawable(R.drawable.restaurant));
         }
-        holder.textview_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), DetailsActivity.class);
-                String placeId = googlePlaces.getPlace_id();
-                intent.putExtra("placeId",placeId);
-                Log.d(TAG, "onClick: " + placeId);
-                context.startActivity(intent);
-            }
+        holder.textview_name.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+            String placeId = googlePlaces.getPlace_id();
+            intent.putExtra("placeId",placeId);
+            Log.d(TAG, "onClick: " + placeId);
+            context.startActivity(intent);
         });
 
     }

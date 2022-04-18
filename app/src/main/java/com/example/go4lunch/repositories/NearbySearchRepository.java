@@ -51,36 +51,7 @@ public class NearbySearchRepository {
         return data;
     }
 
-    /*private void updateDatasWithAddittionnalsInformations(List<GooglePlaces.Results> results) {
-        String placeId;
-        // Place place = new Place();
 
-        for (GooglePlaces.Results r : results) {
-            placeId = r.getPlace_id();
-            Log.d(TAG, "onRes: " + placeId);
-            mapsAPI.getPlaceDetails(placeId).enqueue(new Callback<Place>() {
-                @Override
-                public void onResponse(@NonNull Call<Place> call, @NonNull Response<Place> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        r.setWebsite(response.body().getResult().getWebsite());
-                        r.setFormatted_address(response.body().getResult().getFormatted_address());
-                        r.setFormatted_phone_number(response.body().getResult().getFormatted_phone_number());
-                        r.setOpening_hours(response.body().getResult().getOpening_hours());
-
-
-                    } else {
-                        Log.d(TAG, "onResponse: NULL");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Place> call, Throwable t) {
-                    Log.d(TAG, "onResponse: failed " + t.getStackTrace());
-                }
-            });
-
-        }
-    }*/
 
 
     public LiveData<List<GooglePlaces.Results>> getNearBySearchLiveData() {

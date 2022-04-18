@@ -3,8 +3,10 @@ package com.example.go4lunch.ui.activities;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -22,13 +26,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
-import com.example.go4lunch.manager.UserManager;
 import com.example.go4lunch.listview.ListViewFragment;
+import com.example.go4lunch.repositories.LocationRepository;
+import com.example.go4lunch.user.UserManager;
 import com.example.go4lunch.mapsView.MapsViewFragment;
 import com.example.go4lunch.workmatesview.WorkmatesFragment;
 import com.firebase.ui.auth.AuthUI;
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+    private ActivityResultLauncher<Intent> signInActivityResultLauncher;
     private final UserManager userManager = UserManager.getInstance();
     final int yourLunch = R.id.activity_main_drawer_your_lunch;
     final int settings = R.id.activity_main_drawer_settings;
@@ -70,6 +77,47 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         View view = binding.getRoot();
         setContentView(view);
 
+
+
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        signInActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+
+                        IdpResponse response = IdpResponse.fromResultIntent(result.getData());
+                        // SUCCESS
+                        if (result.getResultCode() == RESULT_OK) {
+                            showSnackBar(getString(R.string.connection_succeed));
+                            userManager.createUser();
+                            updateUiWithUserData();
+                            try {
+                                configureMapViewFragment();
+                            } catch (IllegalAccessException | InstantiationException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else {
+                            // ERRORS
+                            if (response == null) {
+                                showSnackBar(getString(R.string.error_authentication_canceled));
+                            } else if (response.getError() != null) {
+                                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                                    showSnackBar(getString(R.string.error_no_internet));
+                                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                                    showSnackBar(getString(R.string.error_unknown_error));
+                                }
+
+                            }
+                            if (!userManager.isCurrentUserLogged()) {
+                                startSignInActivity();
+                            }
+                        }
+
+
+                    }
+                });
+
         configureActivity();
         startSignInActivity();
 
@@ -79,13 +127,11 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     protected void onPause() {
         super.onPause();
-        // locationRepository.stopLocationRequest();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        locationRepository.startLocationRequest();
     }
 
     private void configureActivity() {
@@ -101,15 +147,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 new AuthUI.IdpConfig.FacebookBuilder().build());
 
         // Launch the activity
-        startActivityForResult(
+        signInActivityResultLauncher.launch(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setTheme(R.style.Theme_Go4LunchBottomNavigation)
                         .setAvailableProviders(providers)
                         .setIsSmartLockEnabled(false, true)
                         .setLogo(R.drawable.bowl_icon)
-                        .build(),
-                RC_SIGN_IN);
+                        .build());
 
 
     }
@@ -119,10 +164,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        try {
-            handleResponseAfterSignIn(requestCode, resultCode, data);
-        } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            try {
+                configureMapViewFragment();
+            } catch (IllegalAccessException | InstantiationException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -130,42 +177,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private void showSnackBar(String message) {
         Snackbar.make(binding.mainLayout, message, Snackbar.LENGTH_SHORT).show();
-    }
-
-    private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) throws IllegalAccessException, InstantiationException {
-
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            // SUCCESS
-            if (resultCode == RESULT_OK) {
-                showSnackBar(getString(R.string.connection_succeed));
-                updateUiWithUserData();
-                configureMapViewFragment();
-
-            } else {
-                // ERRORS
-                if (response == null) {
-                    showSnackBar(getString(R.string.error_authentication_canceled));
-                } else if (response.getError() != null) {
-                    if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                        showSnackBar(getString(R.string.error_no_internet));
-                    } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                        showSnackBar(getString(R.string.error_unknown_error));
-                    }
-
-                }
-                if (!userManager.isCurrentUserLogged()) {
-                    startSignInActivity();
-                }
-            }
-        } else if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
-            try {
-                configureMapViewFragment();
-            } catch (IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 
@@ -200,9 +211,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             switch (item.getItemId()) {
 
                 case yourLunch:
-
-                    //Log.d(TAG, "onChanged: " + myLocation.getLatitude());
-
                     Toast.makeText(getApplicationContext(), "TEST " + drawerLayout.getDrawingTime(), Toast.LENGTH_SHORT).show();
                     break;
                 case settings:
