@@ -6,7 +6,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,24 +25,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
+import com.example.go4lunch.details.DetailsActivity;
 import com.example.go4lunch.listview.ListViewFragment;
-import com.example.go4lunch.repositories.LocationRepository;
-import com.example.go4lunch.user.UserManager;
 import com.example.go4lunch.mapsView.MapsViewFragment;
+import com.example.go4lunch.user.UserManager;
 import com.example.go4lunch.workmatesview.WorkmatesFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +57,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final int RC_SIGN_IN = 123;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final String FRAGMENT_MAPS_TAG = "FRAGMENT_MAP_TAG";
     private ActivityMainBinding binding;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     final int pageMapView = R.id.page_mapview;
     final int pageListView = R.id.page_listview;
     final int pageWorkmates = R.id.page_workmates;
+    private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,52 +80,80 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-
+        binding.logInButton.setVisibility(View.GONE);
 
         // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
         signInActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    IdpResponse response = IdpResponse.fromResultIntent(result.getData());
                     if (result.getResultCode() == Activity.RESULT_OK) {
 
-                        IdpResponse response = IdpResponse.fromResultIntent(result.getData());
+
                         // SUCCESS
+
                         if (result.getResultCode() == RESULT_OK) {
                             showSnackBar(getString(R.string.connection_succeed));
                             userManager.createUser();
+                            //TODO get infos FROM FIRESTORE
                             updateUiWithUserData();
                             try {
-                                configureMapViewFragment();
+                                if (userManager.isCurrentUserLogged()) {
+                                    binding.bottomNavigation.setVisibility(View.VISIBLE);
+                                    binding.logInButton.setVisibility(View.GONE);
+                                    configureMapViewFragment();
+                                }
                             } catch (IllegalAccessException | InstantiationException e) {
                                 e.printStackTrace();
                             }
 
-                        } else {
-                            // ERRORS
-                            if (response == null) {
-                                showSnackBar(getString(R.string.error_authentication_canceled));
-                            } else if (response.getError() != null) {
-                                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                                    showSnackBar(getString(R.string.error_no_internet));
-                                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                                    showSnackBar(getString(R.string.error_unknown_error));
-                                }
-
-                            }
-                            if (!userManager.isCurrentUserLogged()) {
-                                startSignInActivity();
-                            }
                         }
 
 
+                    } else {
+                        Log.d(TAG, "onCreate: OTHER");
+                        // ERRORS
+                        if (response == null) {
+                            Log.d(TAG, "onCreate: NULL");
+                            showSnackBar(getString(R.string.error_authentication_canceled));
+                            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+                            for (Fragment fragment : fragments) {
+                                if (fragment != null) {
+                                    getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                                }
+                            }
+                            binding.bottomNavigation.setVisibility(View.GONE);
+                            binding.logInButton.setVisibility(View.VISIBLE);
+
+
+                        } else if (response.getError() != null) {
+                            if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                                showSnackBar(getString(R.string.error_no_internet));
+                            } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                                showSnackBar(getString(R.string.error_unknown_error));
+                            }
+
+                        }
+                        if (!userManager.isCurrentUserLogged()) {
+                            showSnackBar(getString(R.string.login_obligation));
+                        }
                     }
                 });
 
         configureActivity();
+        initListeners();
         startSignInActivity();
 
 
+    }
+
+    private void initListeners() {
+        binding.logInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSignInActivity();
+            }
+        });
     }
 
     @Override
@@ -176,7 +208,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
 
     private void showSnackBar(String message) {
-        Snackbar.make(binding.mainLayout, message, Snackbar.LENGTH_SHORT).show();
+        Snackbar snackbar = Snackbar.make(binding.mainLayout, message, Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 
 
@@ -211,7 +244,21 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             switch (item.getItemId()) {
 
                 case yourLunch:
-                    Toast.makeText(getApplicationContext(), "TEST " + drawerLayout.getDrawingTime(), Toast.LENGTH_SHORT).show();
+
+                    userManager.getUserData().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.getResult().get(SELECTED_RESTAURANT_ID) != null && !task.getResult().get(SELECTED_RESTAURANT_ID).toString().isEmpty()) {
+                                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                                intent.putExtra("placeId", task.getResult().get(SELECTED_RESTAURANT_ID).toString());
+                                startActivity(intent);
+                            } else {
+                                showSnackBar(getString(R.string.not_chosen_yet));
+                            }
+
+                        }
+                    });
+
                     break;
                 case settings:
                     Toast.makeText(getApplicationContext(), "SETTINGS", Toast.LENGTH_SHORT).show();
@@ -309,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         if (EasyPermissions.hasPermissions(this, perms)) {
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, MapsViewFragment.class.newInstance(), null)
+                    .replace(R.id.fragment_container, MapsViewFragment.class.newInstance(), FRAGMENT_MAPS_TAG)
                     .setReorderingAllowed(true)
                     .commit();
         } else {

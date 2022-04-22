@@ -4,18 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragments.MapViewFragment"
+    tools:context=".workmatesview.WorkmatesFragment"
     android:background="#FFF5F5F5">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_workmates"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Workmates"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_workmate"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

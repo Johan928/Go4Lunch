@@ -11,7 +11,9 @@ import com.example.go4lunch.model.GooglePlaces;
 import com.example.go4lunch.model.Place;
 import com.example.go4lunch.retrofit.MapsAPI;
 import com.example.go4lunch.retrofit.RetrofitRequest;
+import com.example.go4lunch.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -21,6 +23,7 @@ import retrofit2.Response;
 public class PlaceRepository {
     MapsAPI mapsAPI = RetrofitRequest.getRetrofitInstance().create(MapsAPI.class);
     MutableLiveData<Place> placeMutableLiveData = new MutableLiveData<>();
+    private int userCounter;
 
     public PlaceRepository() {
         mapsAPI = RetrofitRequest.getRetrofitInstance().create(MapsAPI.class);
@@ -44,11 +47,11 @@ public class PlaceRepository {
         });
 
 
-
         return data;
     }
 
     public LiveData<Place> getPlaceLiveDetails(String placeId) {
         return getPlaceDetails(placeId);
     }
+
 }

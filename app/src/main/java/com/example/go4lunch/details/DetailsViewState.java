@@ -8,22 +8,17 @@ import java.util.List;
 
 public class DetailsViewState {
 
-    private List<GooglePlaces.Results> placesList;
+
     private Place place;
     private List<User> userList;
 
-    public DetailsViewState(Place place, List<GooglePlaces.Results> placesList, List<User> userList) {
+    public DetailsViewState(Place place, List<User> userList) {
         this.place = place;
-        this.placesList = placesList;
         this.userList = userList;
     }
 
     public Place getPlace() {
         return place;
-    }
-
-    public List<GooglePlaces.Results> getPlaces() {
-        return placesList;
     }
 
     public List<User> getUserList() {

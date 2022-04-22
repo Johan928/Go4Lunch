@@ -81,7 +81,9 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
             public void onChanged(MapsViewViewState mapsViewViewState) {
                 if (mapsViewViewState.getLocation() != null && mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
                     progressBar.setVisibility(View.GONE);
+                    Log.d(TAG, "onChanged: MVS");
                     if (mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
+                        Log.d(TAG, "onChanged: CLEAR");
                         selectedRestaurantList = mapsViewViewState.getSelectedRestaurantsList();
                         googlePlaces.clear();
                         googlePlaces.addAll(mapsViewViewState.getPlaces());
@@ -128,14 +130,14 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void updatePlacesOnMap(GoogleMap googleMap) {
         LatLng point;
+        googleMap.clear();
         for (GooglePlaces.Results r : googlePlaces) {
             BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
             for (User ds : selectedRestaurantList) {
-                if (ds.getSelectedRestaurantPlaceId().equals(r.getPlace_id())) {
+                if (ds.getSelectedRestaurantPlaceId() != null && ds.getSelectedRestaurantPlaceId().equals(r.getPlace_id())) {
                     bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
                 }
             }
-            // bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
 
             point = new LatLng(r.getGeometry().getLocation().getLat(), r.getGeometry().getLocation().getLng());
             Marker marker;

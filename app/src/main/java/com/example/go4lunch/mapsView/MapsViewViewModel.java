@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
@@ -13,7 +14,6 @@ import com.example.go4lunch.repositories.LocationRepository;
 import com.example.go4lunch.repositories.NearbySearchRepository;
 import com.example.go4lunch.repositories.UserRepository;
 import com.example.go4lunch.user.User;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
 
@@ -24,6 +24,7 @@ public class MapsViewViewModel extends ViewModel {
     private final NearbySearchRepository nearbySearchRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private LiveData<List<GooglePlaces.Results>> places = new MutableLiveData<>();
 
     /**
      * We have to wait location change to call the nearbysearch request
@@ -36,34 +37,32 @@ public class MapsViewViewModel extends ViewModel {
 
         LiveData<Location> location = locationRepository.getLocationLiveData();
         LiveData<List<User>> selectedRestaurantsList = userRepository.getUserList();
-
+        // LiveData<List<GooglePlaces.Results>> places = nearbySearchRepository.getNearBySearch((location.getValue()));
 
 
         mMediator.addSource(location, new Observer<Location>() {
             @Override
             public void onChanged(Location location) {
 
-               // combine(location, places.getValue(), selectedRestaurantsList.getValue());
-
-                LiveData<List<GooglePlaces.Results>> places = nearbySearchRepository.getNearBySearch(location);
+                places = nearbySearchRepository.getNearBySearch((location));
                 mMediator.addSource(places, new Observer<List<GooglePlaces.Results>>() {
                     @Override
                     public void onChanged(List<GooglePlaces.Results> results) {
-
                         combine(location, results, selectedRestaurantsList.getValue());
                     }
                 });
 
-                mMediator.addSource(selectedRestaurantsList, new Observer<List<User>>() {
-                    @Override
-                    public void onChanged(List<User> documentSnapshots) {
-
-                        combine(location, places.getValue(), selectedRestaurantsList.getValue());
-                    }
-                });
             }
         });
 
+
+        mMediator.addSource(selectedRestaurantsList, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> userList) {
+
+                combine(location.getValue(), places.getValue(), userList);
+            }
+        });
 
 
     }

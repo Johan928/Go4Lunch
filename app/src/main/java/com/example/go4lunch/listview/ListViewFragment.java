@@ -76,7 +76,7 @@ public class ListViewFragment extends Fragment {
         listViewViewModel.getListViewLiveData().observe(getViewLifecycleOwner(),new Observer<ListViewViewState>() {
             @Override
             public void onChanged(ListViewViewState listViewViewState) {
-                Log.d(TAG, "onChangedLLV: ");
+             //   Log.d(TAG, "onChangedLLV: ");
                 LatLng myPosition;
                 if (listViewViewState.getPlaces() != null && listViewViewState.getLocation() != null && listViewViewState.getSelectedRestaurantsList() != null) {
                     selectedRestaurantList = listViewViewState.getSelectedRestaurantsList();

@@ -41,6 +41,11 @@
     <string name="permission_rationale_call">Go4lunch need this permission to use this fonctionnality</string>
     <string name="website_not_specified">Website not specified</string>
     <string name="call_error">Call Error</string>
+    <string name="NC">N/C</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="login_obligation">You must login to use Go4lunch</string>
+    <string name="not_chosen_yet">not chosen yet !!!</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
 
 
 </resources>

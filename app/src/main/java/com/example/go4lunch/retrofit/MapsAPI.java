@@ -14,7 +14,9 @@ public interface MapsAPI {
   @GET("maps/api/place/nearbysearch/json?radius=25000&types=restaurant&key="+MAPS_API_KEY)
     Call<GooglePlaces> getNearBySearch(@Query("location") String location);
 
-  @GET("maps/api/place/details/json?fields=formatted_phone_number,website,opening_hours&key="+MAPS_API_KEY)
+  @GET("maps/api/place/details/json?fields=name,vicinity,photos,formatted_phone_number,website,opening_hours&key="+MAPS_API_KEY)
   Call<Place> getPlaceDetails(@Query("place_id") String place_id);
+
+
 
 }

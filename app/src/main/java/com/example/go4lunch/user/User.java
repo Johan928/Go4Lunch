@@ -9,6 +9,10 @@ public class User {
     private String urlPicture;
     private String selectedRestaurantPlaceId;
     private List<String> favoriteRestaurantsList;
+    private String selectedRestaurantName;
+    private String selectedRestaurantAddress;
+
+
 
     public User() {
         //required for incoming documentSnapShot from firestore to be recovered
@@ -57,7 +61,23 @@ public class User {
         return favoriteRestaurantsList;
     }
 
-    public void setFavoriteRestaurantsList(List<String> favoriteRestaurantsList) {
+    public void setFavoriteRestaurantsList(ArrayList<String> favoriteRestaurantsList) {
         this.favoriteRestaurantsList = favoriteRestaurantsList;
+    }
+
+    public String getSelectedRestaurantName() {
+        return selectedRestaurantName;
+    }
+
+    public void setSelectedRestaurantName(String selectRestaurantName) {
+        this.selectedRestaurantName = selectRestaurantName;
+    }
+
+    public String getSelectedRestaurantAddress() {
+        return selectedRestaurantAddress;
+    }
+
+    public void setSelectedRestaurantAddress(String selectRestaurantAddress) {
+        this.selectedRestaurantAddress = selectRestaurantAddress;
     }
 }

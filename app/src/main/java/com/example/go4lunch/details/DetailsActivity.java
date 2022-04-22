@@ -30,15 +30,17 @@ import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityDetailsBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.model.GooglePlaces;
-import com.example.go4lunch.model.Place;
 import com.example.go4lunch.user.User;
 import com.example.go4lunch.user.UserManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -51,10 +53,12 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     private ActivityDetailsBinding binding;
     private DetailsViewModel detailsViewModel;
     private TextView textViewCall;
-    private Place place;
+    private String currentPlaceName;
+    private String currentPlaceVicinity;
     private String phoneNumber;
     private UserManager userManager = UserManager.getInstance();
-    private static final String SELECTED_RESTAURANT_FIELD = "selectedRestaurantPlaceId";
+    private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
+    private static final String FAVORITES_RESTAURANTS_FIELD = "favoriteRestaurantsList";
     private String currentSelectedPlace;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -71,38 +75,38 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         }
         //get recorded user selected place
         getUserSelectedRestaurant();
+        getUserFavoriteList();
 
         detailsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(DetailsViewModel.class);
         detailsViewModel.getDetailsViewLiveData(placeId).observe(this, detailsViewState -> {
 
-            if (detailsViewState.getPlace().getResult() != null && detailsViewState.getPlaces() != null && detailsViewState.getUserList() != null) {
-                for (GooglePlaces.Results gp : detailsViewState.getPlaces()) { //Traitement des données places
-                    if (gp.getPlace_id().equals(placeId)) {
-                        binding.detailsActivityTextviewName.setText(gp.getName());
-                        binding.detailsActivityTexviewAddress.setText(gp.getVicinity());
-                        String url;
-                        if (gp.getPhotos() != null) {
-                            url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + gp.getPhotos().get(0).getPhoto_reference() + "&key=" + MAPS_API_KEY;
-                            Glide.with(view)
-                                    .load(url)
-                                    .apply(RequestOptions.centerInsideTransform())
-                                    .into((binding.detailsActivityImageViewRestaurantPhoto));
-                        } else {
-                            //On affiche une image par défaut
-                            Glide.with(view)
-                                    .load(R.drawable.restaurant)
-                                    .apply(RequestOptions.centerInsideTransform())
-                                    .into((binding.detailsActivityImageViewRestaurantPhoto));
-                            //binding.detailsActivityImageViewRestaurantPhoto.setImageDrawable(getDrawable(R.drawable.restaurant));
+            if (detailsViewState.getPlace().getResult() != null && detailsViewState.getUserList() != null) {
 
-                        }
+                String url;
+                if (detailsViewState.getPlace().getResult().getPhotos() != null) {
+                    url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + detailsViewState.getPlace().getResult().getPhotos().get(0).getPhoto_reference() + "&key=" + MAPS_API_KEY;
+                    Glide.with(view)
+                            .load(url)
+                            .apply(RequestOptions.centerInsideTransform())
+                            .into((binding.detailsActivityImageViewRestaurantPhoto));
+                } else {
+                    //On affiche une image par défaut
+                    Glide.with(view)
+                            .load(R.drawable.restaurant)
+                            .apply(RequestOptions.centerInsideTransform())
+                            .into((binding.detailsActivityImageViewRestaurantPhoto));
 
-                    }
                 }
+
+                binding.detailsActivityTextviewName.setText(detailsViewState.getPlace().getResult().getName());
+                binding.detailsActivityTexviewAddress.setText(detailsViewState.getPlace().getResult().getVicinity());
                 binding.textViewCall.setTag(detailsViewState.getPlace().getResult().getFormatted_phone_number());
                 binding.textViewWebsite.setTag(detailsViewState.getPlace().getResult().getWebsite());
+                binding.textViewLike.setTag(placeId);
                 binding.detailsActivityFabSelectRestaurant.setTag(placeId);
 
+                currentPlaceName = detailsViewState.getPlace().getResult().getName();
+                currentPlaceVicinity = detailsViewState.getPlace().getResult().getVicinity();
 
                 initRecyclerView(detailsViewState.getUserList());
             }
@@ -110,6 +114,29 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
         initListeners();
 
+    }
+
+    private void getUserFavoriteList() {
+        List<String> favoritesList = new ArrayList<>();
+     userManager.getUserData().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+         @Override
+         public void onSuccess(DocumentSnapshot documentSnapshot) {
+        User user = documentSnapshot.toObject(User.class);
+        if (user.getFavoriteRestaurantsList() != null && user.getFavoriteRestaurantsList().size() > 0 ) {
+            for (String s : user.getFavoriteRestaurantsList()) {
+                favoritesList.add(s);
+            }
+        }
+
+        if (favoritesList.contains(placeId)) {
+            binding.imageviewLikedStar.setVisibility(View.VISIBLE);
+            binding.textViewLike.setText("DISLIKE");
+        } else {
+            binding.imageviewLikedStar.setVisibility(View.GONE);
+            binding.textViewLike.setText("LIKE");
+        }
+         }
+     });
     }
 
     private void initRecyclerView(List<User> userList) {
@@ -120,12 +147,28 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
       /*  if (adapter != null) {
             adapter.submitList(userList);
         } else {*/
-            adapter = new DetailsAdapter(getApplicationContext(),userList);
-            recyclerView.setAdapter(adapter);
+        adapter = new DetailsAdapter(getApplicationContext(), userList);
+        recyclerView.setAdapter(adapter);
         /*}*/
 
     }
 
+    private void addOrRemoveFavoriteRestaurant(String placeId,boolean likedStatus) {
+        userManager.updateFavoritesRestaurantList(placeId,likedStatus).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if (!likedStatus) {
+                    Toast.makeText(getApplicationContext(),getString(R.string.added_to_favorites),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),getString(R.string.removed_from_favorites),Toast.LENGTH_SHORT).show();
+                }
+
+
+                getUserFavoriteList();
+            }
+        });
+
+    }
 
     private void initListeners() {
         binding.textViewWebsite.setOnClickListener(v -> {
@@ -147,12 +190,23 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                 EasyPermissions.requestPermissions(DetailsActivity.this, getString(R.string.permission_rationale_call), CALL_PERMISSION_REQUEST_CODE, perms);
             }
         });
+        binding.textViewLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean likedStatus;
+                if (binding.imageviewLikedStar.getVisibility() == View.GONE) {
+                    likedStatus = false;
+                } else {likedStatus = true;}
+                addOrRemoveFavoriteRestaurant(v.getTag().toString(),likedStatus);
+            }
+        });
         binding.detailsActivityFabSelectRestaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (currentSelectedPlace == null || !currentSelectedPlace.equals(placeId)) {
-                    userManager.updateSelectedRestaurant(v.getTag().toString())
+                    Log.d(TAG, "onClick: vic" + currentPlaceVicinity);
+                    userManager.updateSelectedRestaurant(v.getTag().toString(), currentPlaceName, currentPlaceVicinity)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
@@ -183,9 +237,9 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         userManager.getUserData().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().getData().get(SELECTED_RESTAURANT_FIELD) != null) {
-                    Log.d(TAG, "onComplete: " + task.getResult().getData().get(SELECTED_RESTAURANT_FIELD));
-                    currentSelectedPlace = task.getResult().getData().get(SELECTED_RESTAURANT_FIELD).toString();
+                if (task.getResult().getData().get(SELECTED_RESTAURANT_ID) != null) {
+                    Log.d(TAG, "onComplete: " + task.getResult().getData().get(SELECTED_RESTAURANT_ID));
+                    currentSelectedPlace = task.getResult().getData().get(SELECTED_RESTAURANT_ID).toString();
                     Log.d(TAG, "onComplete: " + currentSelectedPlace + "-" + placeId);
                     if (currentSelectedPlace.equals(placeId)) {
                         binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_circle_24, null));

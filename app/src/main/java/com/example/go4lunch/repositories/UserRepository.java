@@ -15,18 +15,22 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserRepository {
 
     private static final String COLLECTION_NAME = "users";
-    private static final String SELECTED_RESTAURANT_FIELD = "selectedRestaurantPlaceId";
+    private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
     private static final String FAVORITES_RESTAURANTS_FIELD = "favoriteRestaurantsList";
+    private static final String SELECTED_RESTAURANT_NAME = "selectedRestaurantName";
+    private  static  final  String SELECTED_RESTAURANT_ADDRESS = "selectedRestaurantAddress";
     private static final String TAG = "123";
     private static volatile UserRepository instance;
     private DocumentSnapshot documentSnapshot;
@@ -82,12 +86,18 @@ public class UserRepository {
             Task<DocumentSnapshot> userData = getUserData();
             // If the user already exist in Firestore, we get his selectedRestaurantPlaceId
             userData.addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.contains(SELECTED_RESTAURANT_FIELD)) {
-                    userToCreate.setSelectedRestaurantPlaceId((String) documentSnapshot.get(SELECTED_RESTAURANT_FIELD));
+                if (documentSnapshot.contains(SELECTED_RESTAURANT_ID)) {
+                    userToCreate.setSelectedRestaurantPlaceId((String) documentSnapshot.get(SELECTED_RESTAURANT_ID));
                 }
                 if (documentSnapshot.contains(FAVORITES_RESTAURANTS_FIELD)) {
-                    userToCreate.setFavoriteRestaurantsList((List<String>) documentSnapshot.get(FAVORITES_RESTAURANTS_FIELD));
+                    userToCreate.setFavoriteRestaurantsList((ArrayList<String>) documentSnapshot.get(FAVORITES_RESTAURANTS_FIELD) );
                 }
+                if (documentSnapshot.contains(SELECTED_RESTAURANT_NAME)) {
+                    userToCreate.setSelectedRestaurantName((String) documentSnapshot.get(SELECTED_RESTAURANT_NAME));
+                }if (documentSnapshot.contains(SELECTED_RESTAURANT_ADDRESS)) {
+                    userToCreate.setSelectedRestaurantAddress((String) documentSnapshot.get(SELECTED_RESTAURANT_ADDRESS));
+                }
+
                 this.getUsersCollection().document(uid).set(userToCreate);
             });
         }
@@ -105,29 +115,8 @@ public class UserRepository {
     }
 
 
-/*
-    public LiveData<List<DocumentSnapshot>> getUserList() {
-        String uid = this.getCurrentUserId();
-        MutableLiveData<List<DocumentSnapshot>> mutableLiveData = new MutableLiveData<>();
-        final CollectionReference collectionReference = getUsersCollection();
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.d(TAG, "onEvent : listen failed");
-                    return;
-                }
-                if (value != null) {
-                    mutableLiveData.setValue(value.getDocuments());
-                    Log.d(TAG, "onEvent: AA" + value.getDocuments().size());
-                } else {
-                    Log.d(TAG, "onEvent: "+ "value is null");
-                }
-            }
-        });
-        return  mutableLiveData;
 
-    }*/
+
 
     public LiveData<List<User>> getUserList() {
         String uid = this.getCurrentUserId();
@@ -162,6 +151,7 @@ public class UserRepository {
     }
 
 
+
     public LiveData<List<User>> getUserJoiningList(String placeId) {
         String uid = this.getCurrentUserId();
         List<User> userList = new ArrayList<>();
@@ -177,7 +167,7 @@ public class UserRepository {
                 if (value != null) {
                     userList.clear();
                     for (DocumentSnapshot ds : value.getDocuments()) {
-                        if (ds.toObject(User.class).getSelectedRestaurantPlaceId().equals(placeId) && !ds.toObject(User.class).getUid().equals(uid)) {
+                        if (ds.toObject(User.class).getSelectedRestaurantPlaceId() != null && ds.toObject(User.class).getSelectedRestaurantPlaceId().equals(placeId) && !ds.toObject(User.class).getUid().equals(uid)) {
                             userList.add(ds.toObject(User.class));
                             Log.d(TAG, "onEvent: USER" + ds.toObject(User.class).getUsername());
                         }
@@ -198,16 +188,29 @@ public class UserRepository {
         getUserJoiningList(placeId);
     }
 
-    public Task<Void> updateSelectedRestaurant(String placeId) {
+    public Task<Void> updateSelectedRestaurant(String placeId,String restaurantName,String restaurantAddress) {
 
         String uid = this.getCurrentUserId();
         if (uid != null) {
             Log.d(TAG, "updateSelectedRestaurant: " + uid + "-" + placeId);
-            return this.getUsersCollection().document(uid).update(SELECTED_RESTAURANT_FIELD, placeId);
+            return this.getUsersCollection().document(uid).update(SELECTED_RESTAURANT_ID, placeId,SELECTED_RESTAURANT_NAME,restaurantName,SELECTED_RESTAURANT_ADDRESS,restaurantAddress);
         } else {
             return null;
         }
     }
+    public Task<Void> updateFavoritesRestaurantList(String placeId,boolean likedStatus) {
 
+        String uid = this.getCurrentUserId();
+        if (uid != null) {
+           if (likedStatus == false){
+               return this.getUsersCollection().document(uid).update(FAVORITES_RESTAURANTS_FIELD, FieldValue.arrayUnion(placeId));
+           } else {
+               return this.getUsersCollection().document(uid).update(FAVORITES_RESTAURANTS_FIELD, FieldValue.arrayRemove(placeId));
+           }
+
+        } else {
+            return null;
+        }
+    }
 
 }

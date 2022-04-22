@@ -55,9 +55,14 @@ public class UserManager {
          userRepository.createUser();
     }
 
-    public Task<Void> updateSelectedRestaurant(String placeId) {
-       return userRepository.updateSelectedRestaurant(placeId);
+    public Task<Void> updateSelectedRestaurant(String placeId,String restaurantName,String restaurantAddress) {
+       return userRepository.updateSelectedRestaurant(placeId,restaurantName,restaurantAddress);
     }
+
+    public Task<Void> updateFavoritesRestaurantList(String placeId,boolean likedStatus) {
+        return userRepository.updateFavoritesRestaurantList(placeId,likedStatus);
+    }
+
     public Task<DocumentSnapshot> getUserData() {
         return   userRepository.getUserData();
     }

@@ -29,7 +29,6 @@ import com.example.go4lunch.retrofit.MapsAPI;
 import com.example.go4lunch.user.User;
 import com.example.go4lunch.user.UserManager;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -88,12 +87,9 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         GooglePlaces.Results googlePlaces = googlePlacesList.get(position);
         workmatesNumber = 0;
         for (User userSelectedRestaurant : selectedRestaurantList) {
-            /*if (selectedRestaurant.equals(googlePlaces.getPlace_id())) {
-                workmatesNumber +=1;
-            }*/
-            if (userSelectedRestaurant.getSelectedRestaurantPlaceId() != null && userSelectedRestaurant.getSelectedRestaurantPlaceId().equals(googlePlaces.getPlace_id())) {
-                workmatesNumber += 1;
-            }
+                       if (userSelectedRestaurant.getSelectedRestaurantPlaceId() != null && userSelectedRestaurant.getSelectedRestaurantPlaceId().equals(googlePlaces.getPlace_id())) {
+                           workmatesNumber += 1;
+                       }
         }
         StringBuilder stringBuilder2 = new StringBuilder();
         stringBuilder2.append("(").append(String.valueOf(workmatesNumber)).append(")");
@@ -108,7 +104,7 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
                 holder.textview_closing_hour.setText(R.string.closed);
             }
         } else {
-            holder.textview_closing_hour.setText("N/C");
+            holder.textview_closing_hour.setText(R.string.NC);
         }
 
         float[] results = new float[1];
@@ -128,7 +124,7 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
             holder.star2.setVisibility(View.GONE);
             holder.star3.setVisibility(View.GONE);
             Double rating = googlePlaces.getRating();
-            //holder.textview_rating.setText(String.valueOf(rating));
+
             holder.textview_rating.setVisibility(View.GONE); //hiding note textview
             if (rating >= 2) {
                 holder.star1.setVisibility(View.VISIBLE);
@@ -162,7 +158,7 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
             Intent intent = new Intent(v.getContext(), DetailsActivity.class);
             String placeId = googlePlaces.getPlace_id();
             intent.putExtra("placeId",placeId);
-            Log.d(TAG, "onClick: " + placeId);
+           // Log.d(TAG, "onClick: " + placeId);
             context.startActivity(intent);
         });
 
