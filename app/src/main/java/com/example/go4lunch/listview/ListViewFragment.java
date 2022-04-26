@@ -44,7 +44,7 @@ public class ListViewFragment extends Fragment {
     private ListViewAdapter adapter;
     private FragmentListViewBinding binding;
     private LiveData<ListViewViewState> livedata;
-    private UserManager userManager = UserManager.getInstance();
+    private final UserManager userManager = UserManager.getInstance();
     private List<User> selectedRestaurantList = new ArrayList<>();
 
 
@@ -76,7 +76,7 @@ public class ListViewFragment extends Fragment {
         listViewViewModel.getListViewLiveData().observe(getViewLifecycleOwner(),new Observer<ListViewViewState>() {
             @Override
             public void onChanged(ListViewViewState listViewViewState) {
-             //   Log.d(TAG, "onChangedLLV: ");
+
                 LatLng myPosition;
                 if (listViewViewState.getPlaces() != null && listViewViewState.getLocation() != null && listViewViewState.getSelectedRestaurantsList() != null) {
                     selectedRestaurantList = listViewViewState.getSelectedRestaurantsList();
@@ -84,16 +84,11 @@ public class ListViewFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     googlePLacesList.clear();
                     googlePLacesList.addAll(listViewViewState.getPlaces());
-                    /*if (adapter == null) {*/
+
                         adapter = new ListViewAdapter(ListViewFragment.this.getContext(), googlePLacesList, myPosition, selectedRestaurantList);
                         recyclerView.setAdapter(adapter);
-                  /*  } else {
-                        adapter.submitList(googlePLacesList);
-                      // adapter.notifyDataSetChanged();
 
-                    }*/
                 }
-
             }
         });
 
@@ -102,7 +97,6 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
 
     }
 

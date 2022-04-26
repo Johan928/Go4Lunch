@@ -207,14 +207,14 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(v.getContext(), "Choice Recorded !", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), getString(R.string.choice_recorded), Toast.LENGTH_SHORT).show();
                                     getUserSelectedRestaurant();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(v.getContext(), "Unable to record choice", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), getString(R.string.unable_to_record_choice), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 } else {
@@ -222,7 +222,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(v.getContext(), "Choice Canceled !", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(),getString(R.string.choice_canceled), Toast.LENGTH_SHORT).show();
                                     currentSelectedPlace = null;
                                     getUserSelectedRestaurant();
                                 }
@@ -230,7 +230,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(v.getContext(), "Unable to cancel choice", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(v.getContext(), getString(R.string.unable_to_cancel_choice), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -247,7 +247,6 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void getUserSelectedRestaurant() {
-        Log.d(TAG, "getSelectedRestaurant: ");
         userManager.getUserData().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -304,7 +303,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         // String phoneNumber = v.getTag().toString();
 
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + phoneNumber));
+        callIntent.setData(Uri.parse(getString(R.string.tel) + phoneNumber));
         try {
             this.startActivity(callIntent);
         } catch (Exception ex) {

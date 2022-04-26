@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +32,7 @@ public class WorkmatesFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private WorkmatesAdapter adapter;
     private List<GooglePlaces.Results> googlePlaces;
-    private List<User> userList = new ArrayList<>();
+    private final List<User> userList = new ArrayList<>();
     private List<Place> placesList;
     private LiveData<WorkmatesViewState> liveData;
     private WorkmatesViewModel workmatesViewModel;
@@ -66,7 +65,7 @@ public class WorkmatesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -76,20 +75,17 @@ public class WorkmatesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         workmatesViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(WorkmatesViewModel.class);
         liveData = workmatesViewModel.getWorkmatesViewState();
-        liveData.observe(getViewLifecycleOwner(), new Observer<WorkmatesViewState>() {
-            @Override
-            public void onChanged(WorkmatesViewState workmatesViewState) {
-                if (workmatesViewState.getUserList() != null) {
-                    userList.clear();
-                    for (User user : workmatesViewState.getUserList()) {
-                        if (!user.getUid().equals(UserManager.getInstance().getCurrentUser().getUid())) {
-                            Log.d(TAG, "onChanged: " + user.getUid());
-                            userList.add(user);
-                        }
+        liveData.observe(getViewLifecycleOwner(), workmatesViewState -> {
+            if (workmatesViewState.getUserList() != null) {
+                userList.clear();
+                for (User user : workmatesViewState.getUserList()) {
+                    if (!user.getUid().equals(UserManager.getInstance().getCurrentUser().getUid())) {
+                        Log.d(TAG, "onChanged: " + user.getUid());
+                        userList.add(user);
                     }
-
-                    initRecyclerview();
                 }
+
+                initRecyclerview();
             }
         });
     }

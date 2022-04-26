@@ -36,27 +36,12 @@ public class ListViewViewModel extends ViewModel {
         LiveData<List<User>> selectedRestaurantsList = userRepository.getUserList();
         LiveData<List<GooglePlaces.Results>> places = nearbySearchRepository.getNearBySearchLiveData();
 
-        mMediator.addSource(location, new Observer<Location>() {
-            @Override
-            public void onChanged(Location location) {
-                combine(location, places.getValue(), selectedRestaurantsList.getValue());
-            }
-        });
+        mMediator.addSource(location, location1 -> combine(location1, places.getValue(), selectedRestaurantsList.getValue()));
 
-        mMediator.addSource(places, new Observer<List<GooglePlaces.Results>>() {
-            @Override
-            public void onChanged(List<GooglePlaces.Results> results) {
-                combine(location.getValue(), results, selectedRestaurantsList.getValue());
-            }
-        });
+        mMediator.addSource(places, results -> combine(location.getValue(), results, selectedRestaurantsList.getValue()));
 
 
-        mMediator.addSource(selectedRestaurantsList, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> selectedRestaurantsList) {
-                combine(location.getValue(), places.getValue(), selectedRestaurantsList);
-            }
-        });
+        mMediator.addSource(selectedRestaurantsList, selectedRestaurantsList1 -> combine(location.getValue(), places.getValue(), selectedRestaurantsList1));
     }
 
     private void combine(Location location, List<GooglePlaces.Results> googlePlaces, List<User> selectedRestaurantsList) {
@@ -67,8 +52,6 @@ public class ListViewViewModel extends ViewModel {
 
     }
 
-
-    //observé par la vue
     public LiveData<ListViewViewState> getListViewLiveData() {
         return mMediator;
     }

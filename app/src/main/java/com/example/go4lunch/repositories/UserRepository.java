@@ -1,9 +1,7 @@
 package com.example.go4lunch.repositories;
 
 import android.content.Context;
-import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,15 +12,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class UserRepository {
 
@@ -75,7 +70,6 @@ public class UserRepository {
     // Create User in Firestore
     public void createUser() {
         FirebaseUser user = getCurrentUser();
-        Log.d(TAG, "createUser: " + user.getDisplayName());
         if (user != null) {
             String urlPicture = (user.getPhotoUrl() != null) ? user.getPhotoUrl().toString() : null;
             String username = user.getDisplayName();
@@ -123,28 +117,18 @@ public class UserRepository {
         List<User> userList = new ArrayList<>();
         MutableLiveData<List<User>> mutableLiveData = new MutableLiveData<>();
         final CollectionReference collectionReference = getUsersCollection();
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.d(TAG, "onEvent : listen failed");
-                    return;
-                }
-                if (value != null) {
-                    userList.clear();
-                    for (DocumentSnapshot ds : value.getDocuments()) {
-
-                        userList.add(ds.toObject(User.class));
-                        Log.d(TAG, "onEvent: USER" + ds.toObject(User.class).getUsername());
-
-
-                    }
-                    Log.d(TAG, "onEvent: " + value.getDocuments().size());
-                } else {
-                    Log.d(TAG, "onEvent: " + "value is null");
-                }
-                mutableLiveData.setValue(userList);
+        collectionReference.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
             }
+            if (value != null) {
+                userList.clear();
+                for (DocumentSnapshot ds : value.getDocuments()) {
+                    userList.add(ds.toObject(User.class));
+                }
+
+            }
+            mutableLiveData.setValue(userList);
         });
         return mutableLiveData;
 
@@ -157,28 +141,23 @@ public class UserRepository {
         List<User> userList = new ArrayList<>();
         MutableLiveData<List<User>> mutableLiveData = new MutableLiveData<>();
         final CollectionReference collectionReference = getUsersCollection();
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.d(TAG, "onEvent : listen failed");
-                    return;
-                }
-                if (value != null) {
-                    userList.clear();
-                    for (DocumentSnapshot ds : value.getDocuments()) {
-                        if (ds.toObject(User.class).getSelectedRestaurantPlaceId() != null && ds.toObject(User.class).getSelectedRestaurantPlaceId().equals(placeId) && !ds.toObject(User.class).getUid().equals(uid)) {
-                            userList.add(ds.toObject(User.class));
-                            Log.d(TAG, "onEvent: USER" + ds.toObject(User.class).getUsername());
-                        }
+        collectionReference.addSnapshotListener((value, error) -> {
+            if (error != null) {
+
+                return;
+            }
+            if (value != null) {
+                userList.clear();
+                for (DocumentSnapshot ds : value.getDocuments()) {
+                    if (Objects.requireNonNull(ds.toObject(User.class)).getSelectedRestaurantPlaceId() != null && Objects.requireNonNull(ds.toObject(User.class)).getSelectedRestaurantPlaceId().equals(placeId) && !Objects.requireNonNull(ds.toObject(User.class)).getUid().equals(uid)) {
+                        userList.add(ds.toObject(User.class));
 
                     }
-                    Log.d(TAG, "onEvent: " + value.getDocuments().size());
-                } else {
-                    Log.d(TAG, "onEvent: " + "value is null");
+
                 }
-                mutableLiveData.setValue(userList);
+
             }
+            mutableLiveData.setValue(userList);
         });
         return mutableLiveData;
 
@@ -192,7 +171,6 @@ public class UserRepository {
 
         String uid = this.getCurrentUserId();
         if (uid != null) {
-            Log.d(TAG, "updateSelectedRestaurant: " + uid + "-" + placeId);
             return this.getUsersCollection().document(uid).update(SELECTED_RESTAURANT_ID, placeId,SELECTED_RESTAURANT_NAME,restaurantName,SELECTED_RESTAURANT_ADDRESS,restaurantAddress);
         } else {
             return null;
@@ -202,11 +180,11 @@ public class UserRepository {
 
         String uid = this.getCurrentUserId();
         if (uid != null) {
-           if (likedStatus == false){
-               return this.getUsersCollection().document(uid).update(FAVORITES_RESTAURANTS_FIELD, FieldValue.arrayUnion(placeId));
-           } else {
-               return this.getUsersCollection().document(uid).update(FAVORITES_RESTAURANTS_FIELD, FieldValue.arrayRemove(placeId));
-           }
+            if (!likedStatus) {
+                return this.getUsersCollection().document(uid).update(FAVORITES_RESTAURANTS_FIELD, FieldValue.arrayUnion(placeId));
+            } else {
+                return this.getUsersCollection().document(uid).update(FAVORITES_RESTAURANTS_FIELD, FieldValue.arrayRemove(placeId));
+            }
 
         } else {
             return null;

@@ -90,7 +90,6 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBar = view.findViewById(R.id.progress_bar_maps);
-        // initAutoCompleteSearch();
 
         ViewModelFactory vmf = ViewModelFactory.getInstance();
         mapsViewViewModel = new ViewModelProvider(this, vmf).get(MapsViewViewModel.class);
@@ -100,7 +99,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
             public void onChanged(MapsViewViewState mapsViewViewState) {
                 if (mapsViewViewState.getLocation() != null && mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
                     progressBar.setVisibility(View.GONE);
-                    
+
                     if (mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
 
                         selectedRestaurantList = mapsViewViewState.getSelectedRestaurantsList();

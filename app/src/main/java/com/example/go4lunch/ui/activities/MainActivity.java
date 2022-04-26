@@ -40,13 +40,10 @@ import com.example.go4lunch.workmatesview.WorkmatesFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Arrays;
 import java.util.List;
@@ -83,17 +80,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         setContentView(view);
         binding.logInButton.setVisibility(View.GONE);
 
-        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
         signInActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     IdpResponse response = IdpResponse.fromResultIntent(result.getData());
                     if (result.getResultCode() == Activity.RESULT_OK) {
 
-
-                        // SUCCESS
-
-                        if (result.getResultCode() == RESULT_OK) {
                             showSnackBar(getString(R.string.connection_succeed));
                             userManager.createUser();
                             //TODO get infos FROM FIRESTORE
@@ -108,14 +100,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                                 e.printStackTrace();
                             }
 
-                        }
-
-
                     } else {
-                        Log.d(TAG, "onCreate: OTHER");
                         // ERRORS
                         if (response == null) {
-                            Log.d(TAG, "onCreate: NULL");
                             showSnackBar(getString(R.string.error_authentication_canceled));
                             List<Fragment> fragments = getSupportFragmentManager().getFragments();
                             for (Fragment fragment : fragments) {
@@ -149,12 +136,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void initListeners() {
-        binding.logInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startSignInActivity();
-            }
-        });
+        binding.logInButton.setOnClickListener(v -> startSignInActivity());
     }
 
     @Override
@@ -246,18 +228,15 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                 case yourLunch:
 
-                    userManager.getUserData().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.getResult().get(SELECTED_RESTAURANT_ID) != null && !task.getResult().get(SELECTED_RESTAURANT_ID).toString().isEmpty()) {
-                                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
-                                intent.putExtra("placeId", task.getResult().get(SELECTED_RESTAURANT_ID).toString());
-                                startActivity(intent);
-                            } else {
-                                showSnackBar(getString(R.string.not_chosen_yet));
-                            }
-
+                    userManager.getUserData().addOnCompleteListener(task -> {
+                        if (task.getResult().get(SELECTED_RESTAURANT_ID) != null && !Objects.requireNonNull(task.getResult().get(SELECTED_RESTAURANT_ID)).toString().isEmpty()) {
+                            Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                            intent.putExtra("placeId", Objects.requireNonNull(task.getResult().get(SELECTED_RESTAURANT_ID)).toString());
+                            startActivity(intent);
+                        } else {
+                            showSnackBar(getString(R.string.not_chosen_yet));
                         }
+
                     });
 
                     break;

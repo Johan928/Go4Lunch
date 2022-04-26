@@ -42,4 +42,8 @@
     <string name="login_obligation">Vous devez être identifié pour utiliser Go4Lunch</string>
     <string name="not_chosen_yet">pas encore choisi !!!</string>
     <string name="removed_from_favorites">Retiré des favoris</string>
+    <string name="choice_recorded">choix enregistré !</string>
+    <string name="unable_to_record_choice">l\'enregistrement a échoué</string>
+    <string name="choice_canceled">choix annulé !</string>
+    <string name="unable_to_cancel_choice">l\'annulation a échoué</string>
 </resources>
