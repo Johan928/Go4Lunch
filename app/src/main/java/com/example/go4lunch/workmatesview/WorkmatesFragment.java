@@ -53,13 +53,8 @@ public class WorkmatesFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
-        /*if (adapter != null) {
-            adapter.submitList(userList);
-        } else {*/
-            adapter = new WorkmatesAdapter(getContext(), userList);
-            recyclerView.setAdapter(adapter);
-        /*}*/
+        adapter = new WorkmatesAdapter(getContext(), userList);
+        recyclerView.setAdapter(adapter);
 
 
     }
@@ -71,10 +66,8 @@ public class WorkmatesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkmatesBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 

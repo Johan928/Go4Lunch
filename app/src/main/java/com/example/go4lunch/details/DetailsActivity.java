@@ -29,18 +29,15 @@ import com.example.go4lunch.Adapter.DetailsAdapter;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityDetailsBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
-import com.example.go4lunch.model.GooglePlaces;
 import com.example.go4lunch.user.User;
 import com.example.go4lunch.user.UserManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -73,8 +70,9 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         if (getIntent() != null) {
             placeId = getIntent().getStringExtra("placeId");
         }
-        //get recorded user selected place
+        //get logged user selected place
         getUserSelectedRestaurant();
+        //get logged user favorites list
         getUserFavoriteList();
 
         detailsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(DetailsViewModel.class);
@@ -205,29 +203,45 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
             public void onClick(View v) {
 
                 if (currentSelectedPlace == null || !currentSelectedPlace.equals(placeId)) {
-                    Log.d(TAG, "onClick: vic" + currentPlaceVicinity);
                     userManager.updateSelectedRestaurant(v.getTag().toString(), currentPlaceName, currentPlaceVicinity)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(v.getContext(), "Choice Recorded !", Toast.LENGTH_SHORT).show();
                                     getUserSelectedRestaurant();
-
                                 }
                             })
-
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(v.getContext(), "Unable to record choice", Toast.LENGTH_SHORT).show();
-
                                 }
                             });
                 } else {
-                    Toast.makeText(v.getContext(), "You have already chosen this restaurant !", Toast.LENGTH_SHORT).show();
+                    userManager.updateSelectedRestaurant(null, null, null)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(v.getContext(), "Choice Canceled !", Toast.LENGTH_SHORT).show();
+                                    currentSelectedPlace = null;
+                                    getUserSelectedRestaurant();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(v.getContext(), "Unable to cancel choice", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
 
 
+            }
+        });
+        binding.detailsActivityFabBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -238,13 +252,15 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().getData().get(SELECTED_RESTAURANT_ID) != null) {
-                    Log.d(TAG, "onComplete: " + task.getResult().getData().get(SELECTED_RESTAURANT_ID));
+
                     currentSelectedPlace = task.getResult().getData().get(SELECTED_RESTAURANT_ID).toString();
-                    Log.d(TAG, "onComplete: " + currentSelectedPlace + "-" + placeId);
+
                     if (currentSelectedPlace.equals(placeId)) {
                         binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_circle_24, null));
                         binding.detailsActivityFabSelectRestaurant.getDrawable().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_ATOP); //deprecated
                     }
+                } else {
+                    binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_circle_up_24, null));
                 }
 
             }

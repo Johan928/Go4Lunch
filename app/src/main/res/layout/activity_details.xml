@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     android:id="@+id/detailsActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/detailsActivityFabBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="32dp" />
+
 
     <ImageView
         android:id="@+id/detailsActivityImageViewRestaurantPhoto"

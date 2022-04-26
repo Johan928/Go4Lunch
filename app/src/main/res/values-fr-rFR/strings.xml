@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="icon_mapview_text">Carte</string>
+    <string name="icon_listview_text">Liste</string>
+    <string name="icon_workmates_text">Collègues</string>
+    <string name="navigation_drawer_open">Ouvrir le menu</string>
+    <string name="navigation_drawer_close">Fermer le menu</string>
+    <string name="hungry">J\'ai faim!</string>
+    <string name="available_workmates">Collègues disponibles</string>
+    <string name="error_not_connected">Vous devez vous identifier !</string>
+    <string name="error_authentication_canceled">Identification annulée</string>
+    <string name="error_no_internet">Vérifiez votre connexion internet !</string>
+    <string name="error_unknown_error">Erreur inconnue</string>
+    <string name="connection_succeed">Identification réussie !</string>
+    <string name="disconnected">Vous êtes maintenant déconnecté !</string>
+    <string name="info_no_email_found">Pas d\'adresse mail</string>
+    <string name="info_no_username_found">Pas de nom d\'utilisateur</string>
+    <string name="facebook_application_id">258185523195399</string>
+    <string name="fb_login_protocol_scheme">fb258185523195399</string>
+    <string name="permission_rationale_message">L\'accès à la localisation est obligatoire pour utiliser la carte</string>
+    <string name="unknown_rating">Inconnu</string>
+    <string name="mesuremetre">m</string>
+    <string name="opened">Ouvert</string>
+    <string name="closed">Fermé</string>
+    <string name="is_joining">\\u0020 vient aussi</string>
+    <string name="avatar">avatar</string>
+    <string name="adress">adresse</string>
+    <string name="opening_hours">horaires d\'ouverture</string>
+    <string name="restaurant_picture">image du restaurant</string>
+    <string name="button_to_choose_your_daily_restaurant">bouton pour choisir son restaurant du jour</string>
+    <string name="restaurant_name">nom du restaurant</string>
+    <string name="image_of_a_star_for_liked_restaurant">image d\'une étoile pour restaurant favori</string>
+    <string name="website">SITE WEB</string>
+    <string name="call">APPELER</string>
+    <string name="like">AIMER</string>
+    <string name="permission_rationale_call">Go4lunch a besoin de cette permission pour fonctionner</string>
+    <string name="website_not_specified">Site web non spécifié</string>
+    <string name="call_error">Erreur lors de l\'appel</string>
+    <string name="NC">N/C</string>
+    <string name="added_to_favorites">Ajouté aux favoris</string>
+    <string name="login_obligation">Vous devez être identifié pour utiliser Go4Lunch</string>
+    <string name="not_chosen_yet">pas encore choisi !!!</string>
+    <string name="removed_from_favorites">Retiré des favoris</string>
+</resources>

@@ -13,14 +13,18 @@
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_person_outline_24.xml" value="0.124" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_star_24.xml" value="0.2435" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_baseline_star_border_24.xml" value="0.2435" />
-        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_details.xml" value="0.25" />
-        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_details.xml" value="0.33" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_main.xml" value="0.11695906432748537" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_list_view.xml" value="0.20462962962962963" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_map_view.xml" value="0.33" />
-        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_maps_view.xml" value="0.10650887573964497" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_maps_view.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_workmates.xml" value="0.10465116279069768" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/item_restaurant.xml" value="0.25" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/item_workmate.xml" value="0.3109375" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/activity_main_nav_menu.xml" value="0.1" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/nav_menu.xml" value="0.55" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/search_menu.xml" value="0.3074074074074074" />
       </map>
     </option>
   </component>
