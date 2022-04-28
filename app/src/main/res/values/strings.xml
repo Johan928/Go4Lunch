@@ -44,13 +44,15 @@
     <string name="NC">N/C</string>
     <string name="added_to_favorites">Added to favorites</string>
     <string name="login_obligation">You must login to use Go4lunch</string>
-    <string name="not_chosen_yet">not chosen yet !!!</string>
+    <string name="not_chosen_yet">you haven\'t chosen yet !!!</string>
     <string name="removed_from_favorites">Removed from favorites</string>
     <string name="choice_recorded">Choice Recorded !</string>
     <string name="unable_to_record_choice">Unable to record choice</string>
     <string name="choice_canceled">Choice Canceled !</string>
     <string name="unable_to_cancel_choice">Unable to cancel choice</string>
     <string name="tel" translatable="false">tel:</string>
+    <string name="channel_name">notif_channel</string>
+    <string name="channel_description">Notification when Lunch time has come</string>
 
 
 </resources>

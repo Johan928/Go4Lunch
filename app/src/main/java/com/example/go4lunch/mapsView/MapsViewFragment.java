@@ -1,12 +1,14 @@
 package com.example.go4lunch.mapsView;
 
-import static android.content.ContentValues.TAG;
 import static com.example.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,6 +56,7 @@ import java.util.List;
 
 public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
+    private static final String TAG = "123";
     private MapsViewViewModel mapsViewViewModel;
     private ArrayList<GooglePlaces.Results> googlePlaces = new ArrayList<>();
     private GoogleMap googleMap;
@@ -134,6 +137,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
         return view;
     }
 
@@ -146,15 +150,23 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
     private void updatePlacesOnMap(GoogleMap googleMap, ArrayList<GooglePlaces.Results> googlePlaces) {
         LatLng point;
         googleMap.clear();
         for (GooglePlaces.Results r : googlePlaces) {
-            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+            BitmapDescriptor bitmapDescriptor = getMarkerIconFromDrawable(getResources().getDrawable(R.drawable.maps_poi_red, null));
             for (User ds : selectedRestaurantList) {
                 if (ds.getSelectedRestaurantPlaceId() != null && ds.getSelectedRestaurantPlaceId().equals(r.getPlace_id())) {
-                    bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                    bitmapDescriptor = getMarkerIconFromDrawable(getResources().getDrawable(R.drawable.maps_poi_green, null));
                 }
             }
 
@@ -164,22 +176,22 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
                     .position(point)
                     .title(r.getName())
                     .icon(bitmapDescriptor));
+
+            assert marker != null;
             marker.setTag(r.getPlace_id());
 
         }
 
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(@NonNull Marker marker) {
+        googleMap.setOnMarkerClickListener(marker -> {
 
-                Intent intent = new Intent(getContext(), DetailsActivity.class);
-                String placeId = marker.getTag().toString();
-                intent.putExtra("placeId", placeId);
-                requireContext().startActivity(intent);
-                return false;
-            }
+            Intent intent = new Intent(getContext(), DetailsActivity.class);
+            String placeId = marker.getTag().toString();
+            intent.putExtra("placeId", placeId);
+            requireContext().startActivity(intent);
+            return false;
         });
     }
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -187,6 +199,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         inflater.inflate(R.menu.nav_menu, menu);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.nav_search).getActionView();
+        searchView.setBackgroundColor(getResources().getColor(R.color.white));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

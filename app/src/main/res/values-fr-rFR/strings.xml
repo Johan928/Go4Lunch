@@ -23,7 +23,7 @@
     <string name="mesuremetre">m</string>
     <string name="opened">Ouvert</string>
     <string name="closed">Fermé</string>
-    <string name="is_joining">\\u0020 vient aussi</string>
+    <string name="is_joining">\u0020 y va aussi</string>
     <string name="avatar">avatar</string>
     <string name="adress">adresse</string>
     <string name="opening_hours">horaires d\'ouverture</string>
@@ -40,7 +40,7 @@
     <string name="NC">N/C</string>
     <string name="added_to_favorites">Ajouté aux favoris</string>
     <string name="login_obligation">Vous devez être identifié pour utiliser Go4Lunch</string>
-    <string name="not_chosen_yet">pas encore choisi !!!</string>
+    <string name="not_chosen_yet">vous n\'avez pas encore choisi !!!</string>
     <string name="removed_from_favorites">Retiré des favoris</string>
     <string name="choice_recorded">choix enregistré !</string>
     <string name="unable_to_record_choice">l\'enregistrement a échoué</string>
