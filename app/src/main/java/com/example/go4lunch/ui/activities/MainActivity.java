@@ -8,6 +8,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,11 +83,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         createNotificationChannel();
-        createNotification();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
         binding.logInButton.setVisibility(View.GONE);
+
+
 
         signInActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     IdpResponse response = IdpResponse.fromResultIntent(result.getData());
                     if (result.getResultCode() == Activity.RESULT_OK) {
 
+                        if (result.getResultCode() == RESULT_OK) {
                             showSnackBar(getString(R.string.connection_succeed));
                             userManager.createUser();
                             //TODO get infos FROM FIRESTORE
@@ -107,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                             } catch (IllegalAccessException | InstantiationException e) {
                                 e.printStackTrace();
                             }
+
+                        }
 
                     } else {
                         // ERRORS
@@ -138,26 +143,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         configureActivity();
         initListeners();
+
         startSignInActivity();
 
-
     }
 
-    private void createNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.bowl_icon)
-                .setContentTitle("It's time for lunch !!!")
-                .setContentText("BLA BLA BLA")
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("BLA BLA BLA"))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        int notificationId = 12;
-// notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notificationId, builder.build());
 
-
-    }
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -168,9 +159,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
     }

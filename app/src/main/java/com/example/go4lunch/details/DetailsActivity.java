@@ -4,6 +4,9 @@ import static com.example.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -29,6 +32,7 @@ import com.example.go4lunch.Adapter.DetailsAdapter;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityDetailsBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
+import com.example.go4lunch.receivers.AlarmReceiver;
 import com.example.go4lunch.user.User;
 import com.example.go4lunch.user.UserManager;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -60,6 +65,8 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private DetailsAdapter adapter;
+    private static final String CHANNEL_ID = "10";
+    private static final int NOTIFICATION_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +216,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(v.getContext(), getString(R.string.choice_recorded), Toast.LENGTH_SHORT).show();
                                     getUserSelectedRestaurant();
+                                    registerAlarm();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -225,6 +233,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                                     Toast.makeText(v.getContext(),getString(R.string.choice_canceled), Toast.LENGTH_SHORT).show();
                                     currentSelectedPlace = null;
                                     getUserSelectedRestaurant();
+                                    cancelAlarm();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -319,4 +328,38 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         return super.onCreateView(parent, name, context, attrs);
 
     }
+
+    private void registerAlarm() {
+
+        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
+
+        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+                (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager != null) {
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 12);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+
+
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, notifyPendingIntent);
+
+        }
+    }
+
+    private void cancelAlarm() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+
+        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
+        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+                (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(notifyPendingIntent);
+    }
+
 }

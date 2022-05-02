@@ -226,7 +226,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
         RectangularBounds bounds = RectangularBounds.newInstance(
                 new LatLng(myCurrentLocation.getLatitude() - 0.02, myCurrentLocation.getLongitude() - 0.02),
-                new LatLng(-myCurrentLocation.getLatitude() + 0.02, myCurrentLocation.getLongitude() + 0.02));
+                new LatLng(myCurrentLocation.getLatitude() + 0.02, myCurrentLocation.getLongitude() + 0.02));
         // Use the builder to create a FindAutocompletePredictionsRequest.
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
                 .setLocationBias(bounds)
