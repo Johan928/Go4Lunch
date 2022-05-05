@@ -33,14 +33,7 @@
                 android:background="@color/personnal_red"
                 app:title="@string/app_name"
                 app:titleTextColor="@color/white">
-             <!--  <fragment
-                    android:id="@+id/autocomplete_fragment"
-                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
--->
 
-                   />
             </androidx.appcompat.widget.Toolbar>
 
 

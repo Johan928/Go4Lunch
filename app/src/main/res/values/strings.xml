@@ -37,6 +37,7 @@
     <string name="image_of_a_star_for_liked_restaurant">image of a star for liked restaurant</string>
     <string name="website">WEBSITE</string>
     <string name="like">LIKE</string>
+    <string name="dislike">DISLIKE</string>
     <string name="call">CALL</string>
     <string name="permission_rationale_call">Go4lunch need this permission to use this fonctionnality</string>
     <string name="website_not_specified">Website not specified</string>
@@ -51,8 +52,9 @@
     <string name="choice_canceled">Choice Canceled !</string>
     <string name="unable_to_cancel_choice">Unable to cancel choice</string>
     <string name="tel" translatable="false">tel:</string>
-    <string name="channel_name">notif_channel</string>
-    <string name="channel_description">Notification when Lunch time has come</string>
+    <string name="channel_name" translatable="false">notif_channel</string>
+    <string name="channel_description" translatable="false">Notification when Lunch time has come</string>
+
 
 
 </resources>

@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     IdpResponse response = IdpResponse.fromResultIntent(result.getData());
                     if (result.getResultCode() == Activity.RESULT_OK) {
 
-                        if (result.getResultCode() == RESULT_OK) {
+
                             showSnackBar(getString(R.string.connection_succeed));
                             userManager.createUser();
                             //TODO get infos FROM FIRESTORE
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                                 e.printStackTrace();
                             }
 
-                        }
+
 
                     } else {
                         // ERRORS
@@ -136,7 +136,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                         }
                         if (!userManager.isCurrentUserLogged()) {
+                            Log.d(TAG, "onCreate: " + response.getError().toString());
                             showSnackBar(getString(R.string.login_obligation));
+                            binding.bottomNavigation.setVisibility(View.GONE);
+                            binding.logInButton.setVisibility(View.VISIBLE);
                         }
                     }
                 });

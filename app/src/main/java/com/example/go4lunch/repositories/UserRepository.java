@@ -2,6 +2,7 @@ package com.example.go4lunch.repositories;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,8 +13,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +71,17 @@ public class UserRepository {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
+    // Get User Data from Firestore
+    public Task<QuerySnapshot> getUserListInATask() {
+        String uid = this.getCurrentUserId();
+        if (uid != null) {
+          return  this.getUsersCollection().get();
+        } else {
+            return null;
+        }
+    }
+
+
     // Create User in Firestore
     public void createUser() {
         FirebaseUser user = getCurrentUser();
@@ -101,6 +116,16 @@ public class UserRepository {
     // Get User Data from Firestore
     public Task<DocumentSnapshot> getUserData() {
         String uid = this.getCurrentUserId();
+        if (uid != null) {
+            return this.getUsersCollection().document(uid).get();
+        } else {
+            return null;
+        }
+    }
+
+    // Get User Data from Firestore
+    public Task<DocumentSnapshot> getUserDataFromUid(String uid) {
+
         if (uid != null) {
             return this.getUsersCollection().document(uid).get();
         } else {

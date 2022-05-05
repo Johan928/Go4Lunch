@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +68,9 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     private DetailsAdapter adapter;
     private static final String CHANNEL_ID = "10";
     private static final int NOTIFICATION_ID = 0;
+    private SharedPreferences sharedPreferences;
+    private String sharedPrefFile = "com.example.go4lunch";
+    private static final String UID_KEY = "UID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,10 +139,10 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
         if (favoritesList.contains(placeId)) {
             binding.imageviewLikedStar.setVisibility(View.VISIBLE);
-            binding.textViewLike.setText("DISLIKE");
+            binding.textViewLike.setText(R.string.dislike);
         } else {
             binding.imageviewLikedStar.setVisibility(View.GONE);
-            binding.textViewLike.setText("LIKE");
+            binding.textViewLike.setText(R.string.like);
         }
          }
      });
@@ -339,14 +343,19 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         if (alarmManager != null) {
-
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, 12);
+            long currentTime = calendar.getTimeInMillis();
+
+            calendar.set(Calendar.HOUR_OF_DAY, 12;
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
+            // if the restaurant is chosen after 12:00 then the alarm is recorded for the next day
+            if (currentTime > calendar.getTimeInMillis()) {
+                calendar.add(Calendar.HOUR, 24);
+            }
 
-
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, notifyPendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), notifyPendingIntent);
+            updateSharedPreferences();
 
         }
     }
@@ -360,6 +369,25 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                 (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(notifyPendingIntent);
+
+        clearSharedPreferences();
+    }
+
+    private void updateSharedPreferences() {
+        if (UserManager.getInstance().getCurrentUser() != null) {
+            sharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+            SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
+            String Uid = UserManager.getInstance().getCurrentUser().getUid();
+            preferencesEditor.putString(UID_KEY, Uid);
+            preferencesEditor.apply();
+        }
+    }
+
+    private void clearSharedPreferences() {
+        sharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
+        preferencesEditor.clear();
+        preferencesEditor.apply();
     }
 
 }

@@ -23,7 +23,7 @@
     <string name="mesuremetre">m</string>
     <string name="opened">Ouvert</string>
     <string name="closed">Fermé</string>
-    <string name="is_joining">\u0020 y va aussi</string>
+    <string name="is_joining">\u0020 y va</string>
     <string name="avatar">avatar</string>
     <string name="adress">adresse</string>
     <string name="opening_hours">horaires d\'ouverture</string>
@@ -46,4 +46,5 @@
     <string name="unable_to_record_choice">l\'enregistrement a échoué</string>
     <string name="choice_canceled">choix annulé !</string>
     <string name="unable_to_cancel_choice">l\'annulation a échoué</string>
+    <string name="dislike">Je n\'aime plus</string>
 </resources>
