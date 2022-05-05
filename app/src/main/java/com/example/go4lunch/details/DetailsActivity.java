@@ -352,8 +352,8 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
             Calendar calendar = Calendar.getInstance();
             long currentTime = calendar.getTimeInMillis();
 
-            calendar.set(Calendar.HOUR_OF_DAY, 16);
-            calendar.set(Calendar.MINUTE, 43);
+            calendar.set(Calendar.HOUR_OF_DAY, 12);
+            calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             // if the restaurant is chosen after 12:00 then the alarm is recorded for the next day
             if (currentTime > calendar.getTimeInMillis()) {
