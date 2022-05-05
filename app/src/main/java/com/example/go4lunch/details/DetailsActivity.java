@@ -69,8 +69,9 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     private static final String CHANNEL_ID = "10";
     private static final int NOTIFICATION_ID = 0;
     private SharedPreferences sharedPreferences;
-    private String sharedPrefFile = "com.example.go4lunch";
+    private static final String sharedPrefFile = "com.example.Go4lunch";
     private static final String UID_KEY = "UID";
+    private static final String NOTIFICATION_STATUS_KEY = "notification_status";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,12 +154,10 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-      /*  if (adapter != null) {
-            adapter.submitList(userList);
-        } else {*/
+
         adapter = new DetailsAdapter(getApplicationContext(), userList);
         recyclerView.setAdapter(adapter);
-        /*}*/
+
 
     }
 
@@ -171,8 +170,6 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                 } else {
                     Toast.makeText(getApplicationContext(),getString(R.string.removed_from_favorites),Toast.LENGTH_SHORT).show();
                 }
-
-
                 getUserFavoriteList();
             }
         });
@@ -220,7 +217,11 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(v.getContext(), getString(R.string.choice_recorded), Toast.LENGTH_SHORT).show();
                                     getUserSelectedRestaurant();
-                                    registerAlarm();
+                                    boolean status = getNotificationActivationStatus();
+                                    if (status) {
+                                        registerAlarm();
+                                        Toast.makeText(v.getContext(), getString(R.string.alarm_activated), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -257,6 +258,11 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                 finish();
             }
         });
+    }
+
+    private boolean getNotificationActivationStatus() {
+        sharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        return sharedPreferences.getBoolean(NOTIFICATION_STATUS_KEY, true);
     }
 
     private void getUserSelectedRestaurant() {
@@ -346,8 +352,8 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
             Calendar calendar = Calendar.getInstance();
             long currentTime = calendar.getTimeInMillis();
 
-            calendar.set(Calendar.HOUR_OF_DAY, 12;
-            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR_OF_DAY, 16);
+            calendar.set(Calendar.MINUTE, 43);
             calendar.set(Calendar.SECOND, 0);
             // if the restaurant is chosen after 12:00 then the alarm is recorded for the next day
             if (currentTime > calendar.getTimeInMillis()) {
@@ -386,7 +392,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     private void clearSharedPreferences() {
         sharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
-        preferencesEditor.clear();
+        preferencesEditor.putString(UID_KEY, "NOVALUE");
         preferencesEditor.apply();
     }
 

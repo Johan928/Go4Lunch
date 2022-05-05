@@ -25,7 +25,8 @@
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/maps_poi_green.xml" value="0.1655" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/maps_poi_red.xml" value="0.1655" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_details.xml" value="0.33" />
-        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_main.xml" value="0.11695906432748537" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_settings.xml" value="0.25" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_list_view.xml" value="0.20462962962962963" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_map_view.xml" value="0.33" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_maps_view.xml" value="0.1" />
@@ -36,6 +37,7 @@
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/nav_menu.xml" value="0.55" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/search_menu.xml" value="0.3074074074074074" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/xml/settings.xml" value="0.3338541666666667" />
       </map>
     </option>
   </component>

@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -161,7 +160,9 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void updatePlacesOnMap(GoogleMap googleMap, ArrayList<GooglePlaces.Results> googlePlaces) {
         LatLng point;
-        googleMap.clear();
+        if (googleMap != null) {
+            googleMap.clear();
+
         for (GooglePlaces.Results r : googlePlaces) {
             BitmapDescriptor bitmapDescriptor = getMarkerIconFromDrawable(getResources().getDrawable(R.drawable.maps_poi_red, null));
             for (User ds : selectedRestaurantList) {
@@ -190,6 +191,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
             requireContext().startActivity(intent);
             return false;
         });
+        }
     }
 
 

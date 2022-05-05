@@ -46,5 +46,7 @@
     <string name="unable_to_record_choice">l\'enregistrement a échoué</string>
     <string name="choice_canceled">choix annulé !</string>
     <string name="unable_to_cancel_choice">l\'annulation a échoué</string>
-    <string name="dislike">Je n\'aime plus</string>
+    <string name="dislike">NE PLUS AIMER</string>
+    <string name="activate_notification_at_12_00">Activer la notification à 12h00</string>
+    <string name="alarm_activated">Alarme activée</string>
 </resources>

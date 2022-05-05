@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,7 +20,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -28,8 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -62,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final int RC_SIGN_IN = 123;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final String FRAGMENT_MAPS_TAG = "FRAGMENT_MAP_TAG";
+    private static final String FRAGMENT_LIST_TAG = "FRAGMENT_LIST_TAG";
+    private static final String FRAGMENT_WORKMATES_TAG = "FRAGMENT_WORKMATES_TAG";
     private ActivityMainBinding binding;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
@@ -79,6 +79,62 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
     private static final String CHANNEL_ID = "10";
 
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            outState.putString("CURRENT_FRAGMENT", fragment.getTag());
+        }
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+
+            switch (savedInstanceState.getString("CURRENT_FRAGMENT")) {
+                case "FRAGMENT_MAP_TAG" :
+                    try {
+                        configureMapViewFragment();
+                        break;
+                    } catch (IllegalAccessException | InstantiationException e) {
+                        e.printStackTrace();
+                    }
+                case "FRAGMENT_LIST_TAG" :
+                    try {
+                        configureListViewFragment();
+                        break;
+                    } catch (IllegalAccessException | InstantiationException e) {
+                        e.printStackTrace();
+                    }
+                case "FRAGMENT_WORKMATES_TAG" :
+                    try {
+                        configureWorkmatesFragment();
+                        break;
+                    } catch (IllegalAccessException | InstantiationException e) {
+                        e.printStackTrace();
+                    }
+            }
+       }
+
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+
+            Log.d(TAG, "onPause: " + fragment.getTag());
+        }
+
+        super.onPause();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         binding.logInButton.setVisibility(View.GONE);
 
 
-
         signInActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -97,20 +152,19 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     if (result.getResultCode() == Activity.RESULT_OK) {
 
 
-                            showSnackBar(getString(R.string.connection_succeed));
-                            userManager.createUser();
-                            //TODO get infos FROM FIRESTORE
-                            updateUiWithUserData();
-                            try {
-                                if (userManager.isCurrentUserLogged()) {
-                                    binding.bottomNavigation.setVisibility(View.VISIBLE);
-                                    binding.logInButton.setVisibility(View.GONE);
-                                    configureMapViewFragment();
-                                }
-                            } catch (IllegalAccessException | InstantiationException e) {
-                                e.printStackTrace();
+                        showSnackBar(getString(R.string.connection_succeed));
+                        userManager.createUser();
+                        //TODO get infos FROM FIRESTORE
+                        updateUiWithUserData();
+                        try {
+                            if (userManager.isCurrentUserLogged()) {
+                                binding.bottomNavigation.setVisibility(View.VISIBLE);
+                                binding.logInButton.setVisibility(View.GONE);
+                                configureMapViewFragment();
                             }
-
+                        } catch (IllegalAccessException | InstantiationException e) {
+                            e.printStackTrace();
+                        }
 
 
                     } else {
@@ -146,8 +200,20 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
         configureActivity();
         initListeners();
+        if (!UserManager.getInstance().isCurrentUserLogged()) {
+            startSignInActivity();
+        } else {
+            binding.bottomNavigation.setVisibility(View.VISIBLE);
+            binding.logInButton.setVisibility(View.GONE);
+            try {
+                configureMapViewFragment();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
 
-        startSignInActivity();
 
     }
 
@@ -175,10 +241,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         binding.logInButton.setOnClickListener(v -> startSignInActivity());
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     protected void onResume() {
@@ -277,7 +339,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                     break;
                 case settings:
-                    Toast.makeText(getApplicationContext(), "SETTINGS", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(intent);
                     break;
                 case logOut:
                     userManager.signOut(this);
@@ -409,14 +472,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private void configureListViewFragment() throws IllegalAccessException, InstantiationException {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ListViewFragment.class.newInstance(), null)
+                .replace(R.id.fragment_container, ListViewFragment.class.newInstance(), FRAGMENT_LIST_TAG)
                 .setReorderingAllowed(true)
                 .commit();
     }
 
     private void configureWorkmatesFragment() throws IllegalAccessException, InstantiationException {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, WorkmatesFragment.class.newInstance(), null)
+                .replace(R.id.fragment_container, WorkmatesFragment.class.newInstance(), FRAGMENT_WORKMATES_TAG)
                 .setReorderingAllowed(true)
                 .commit();
     }
@@ -426,4 +489,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
+
+
 }

@@ -48,34 +48,35 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         userId = getUidFromSharedPreferences(context);
+        if (!userId.equals("NOVALUE")) {
+            userRepository.getUserDataFromUid(userId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    User user = task.getResult().toObject(User.class);
+                    restaurantName = user.getSelectedRestaurantName();
+                    restaurantAddress = user.getSelectedRestaurantAddress();
+                    restaurantId = user.getSelectedRestaurantPlaceId();
 
-        userRepository.getUserDataFromUid(userId).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                User user = task.getResult().toObject(User.class);
-                restaurantName = user.getSelectedRestaurantName();
-                restaurantAddress = user.getSelectedRestaurantAddress();
-                restaurantId = user.getSelectedRestaurantPlaceId();
 
-
-                userRepository.getUserListInATask().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (DocumentSnapshot ds : task.getResult().getDocuments()) {
-                            if (restaurantId.equals(ds.toObject(User.class).getSelectedRestaurantPlaceId()) && !userId.equals(ds.toObject(User.class).getUid())) {
-                                Log.d(TAG, "onComplete: " + ds.toObject(User.class).getUsername());
-                                User currentUser = ds.toObject(User.class);
-                                joiningWorkmatesList.add(currentUser);
+                    userRepository.getUserListInATask().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for (DocumentSnapshot ds : task.getResult().getDocuments()) {
+                                if (restaurantId.equals(ds.toObject(User.class).getSelectedRestaurantPlaceId()) && !userId.equals(ds.toObject(User.class).getUid())) {
+                                    Log.d(TAG, "onComplete: " + ds.toObject(User.class).getUsername());
+                                    User currentUser = ds.toObject(User.class);
+                                    joiningWorkmatesList.add(currentUser);
+                                }
                             }
+                            setUpNotification(context);
                         }
-                        setUpNotification(context);
-                    }
 
-                });
+                    });
 
 
-            }
-        });
+                }
+            });
+        }
 
 
     }

@@ -77,5 +77,6 @@ dependencies {
 
     implementation "androidx.core:core:1.7.0"
 
+    implementation 'androidx.preference:preference:1.2.0'
 
 }
