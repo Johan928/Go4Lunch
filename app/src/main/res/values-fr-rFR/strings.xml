@@ -49,4 +49,6 @@
     <string name="dislike">NE PLUS AIMER</string>
     <string name="activate_notification_at_12_00">Activer la notification à 12h00</string>
     <string name="alarm_activated">Alarme activée</string>
+    <string name="is_eating_at">\u0020mange à \u0020</string>
+    <string name="not_decided_yet">\u0020n\'a pas encore choisi</string>
 </resources>

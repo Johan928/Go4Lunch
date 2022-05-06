@@ -10,11 +10,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,15 +34,11 @@ import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.receivers.AlarmReceiver;
 import com.example.go4lunch.user.User;
 import com.example.go4lunch.user.UserManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -54,18 +48,14 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     private static final String TAG = "200";
     private String placeId;
     private ActivityDetailsBinding binding;
-    private DetailsViewModel detailsViewModel;
     private TextView textViewCall;
     private String currentPlaceName;
     private String currentPlaceVicinity;
     private String phoneNumber;
-    private UserManager userManager = UserManager.getInstance();
+    private final UserManager userManager = UserManager.getInstance();
     private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
     private static final String FAVORITES_RESTAURANTS_FIELD = "favoriteRestaurantsList";
     private String currentSelectedPlace;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
-    private DetailsAdapter adapter;
     private static final String CHANNEL_ID = "10";
     private static final int NOTIFICATION_ID = 0;
     private SharedPreferences sharedPreferences;
@@ -87,7 +77,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         //get logged user favorites list
         getUserFavoriteList();
 
-        detailsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(DetailsViewModel.class);
+        DetailsViewModel detailsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(DetailsViewModel.class);
         detailsViewModel.getDetailsViewLiveData(placeId).observe(this, detailsViewState -> {
 
             if (detailsViewState.getPlace().getResult() != null && detailsViewState.getUserList() != null) {
@@ -128,50 +118,45 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
     private void getUserFavoriteList() {
         List<String> favoritesList = new ArrayList<>();
-     userManager.getUserData().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-         @Override
-         public void onSuccess(DocumentSnapshot documentSnapshot) {
-        User user = documentSnapshot.toObject(User.class);
-        if (user.getFavoriteRestaurantsList() != null && user.getFavoriteRestaurantsList().size() > 0 ) {
-            for (String s : user.getFavoriteRestaurantsList()) {
-                favoritesList.add(s);
-            }
+     userManager.getUserData().addOnSuccessListener(documentSnapshot -> {
+    User user = documentSnapshot.toObject(User.class);
+         assert user != null;
+         if (user.getFavoriteRestaurantsList() != null && user.getFavoriteRestaurantsList().size() > 0 ) {
+        for (String s : user.getFavoriteRestaurantsList()) {
+            favoritesList.add(s);
         }
+    }
 
-        if (favoritesList.contains(placeId)) {
-            binding.imageviewLikedStar.setVisibility(View.VISIBLE);
-            binding.textViewLike.setText(R.string.dislike);
-        } else {
-            binding.imageviewLikedStar.setVisibility(View.GONE);
-            binding.textViewLike.setText(R.string.like);
-        }
-         }
+    if (favoritesList.contains(placeId)) {
+        binding.imageviewLikedStar.setVisibility(View.VISIBLE);
+        binding.textViewLike.setText(R.string.dislike);
+    } else {
+        binding.imageviewLikedStar.setVisibility(View.GONE);
+        binding.textViewLike.setText(R.string.like);
+    }
      });
     }
 
     private void initRecyclerView(List<User> userList) {
-        recyclerView = binding.recyclerViewDetails;
-        layoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView recyclerView = binding.recyclerViewDetails;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        adapter = new DetailsAdapter(getApplicationContext(), userList);
+        DetailsAdapter adapter = new DetailsAdapter(getApplicationContext(), userList);
         recyclerView.setAdapter(adapter);
 
 
     }
 
     private void addOrRemoveFavoriteRestaurant(String placeId,boolean likedStatus) {
-        userManager.updateFavoritesRestaurantList(placeId,likedStatus).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                if (!likedStatus) {
-                    Toast.makeText(getApplicationContext(),getString(R.string.added_to_favorites),Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(),getString(R.string.removed_from_favorites),Toast.LENGTH_SHORT).show();
-                }
-                getUserFavoriteList();
+        userManager.updateFavoritesRestaurantList(placeId,likedStatus).addOnSuccessListener(unused -> {
+            if (!likedStatus) {
+                Toast.makeText(getApplicationContext(),getString(R.string.added_to_favorites),Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(),getString(R.string.removed_from_favorites),Toast.LENGTH_SHORT).show();
             }
+            getUserFavoriteList();
         });
 
     }
@@ -196,68 +181,38 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
                 EasyPermissions.requestPermissions(DetailsActivity.this, getString(R.string.permission_rationale_call), CALL_PERMISSION_REQUEST_CODE, perms);
             }
         });
-        binding.textViewLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean likedStatus;
-                if (binding.imageviewLikedStar.getVisibility() == View.GONE) {
-                    likedStatus = false;
-                } else {likedStatus = true;}
-                addOrRemoveFavoriteRestaurant(v.getTag().toString(),likedStatus);
-            }
+        binding.textViewLike.setOnClickListener(v -> {
+            boolean likedStatus = binding.imageviewLikedStar.getVisibility() != View.GONE;
+            addOrRemoveFavoriteRestaurant(v.getTag().toString(),likedStatus);
         });
-        binding.detailsActivityFabSelectRestaurant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.detailsActivityFabSelectRestaurant.setOnClickListener(v -> {
 
-                if (currentSelectedPlace == null || !currentSelectedPlace.equals(placeId)) {
-                    userManager.updateSelectedRestaurant(v.getTag().toString(), currentPlaceName, currentPlaceVicinity)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(v.getContext(), getString(R.string.choice_recorded), Toast.LENGTH_SHORT).show();
-                                    getUserSelectedRestaurant();
-                                    boolean status = getNotificationActivationStatus();
-                                    if (status) {
-                                        registerAlarm();
-                                        Toast.makeText(v.getContext(), getString(R.string.alarm_activated), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(v.getContext(), getString(R.string.unable_to_record_choice), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    userManager.updateSelectedRestaurant(null, null, null)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(v.getContext(),getString(R.string.choice_canceled), Toast.LENGTH_SHORT).show();
-                                    currentSelectedPlace = null;
-                                    getUserSelectedRestaurant();
-                                    cancelAlarm();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(v.getContext(), getString(R.string.unable_to_cancel_choice), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
+            if (currentSelectedPlace == null || !currentSelectedPlace.equals(placeId)) {
+                userManager.updateSelectedRestaurant(v.getTag().toString(), currentPlaceName, currentPlaceVicinity)
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(v.getContext(), getString(R.string.choice_recorded), Toast.LENGTH_SHORT).show();
+                            getUserSelectedRestaurant();
+                            boolean status = getNotificationActivationStatus();
+                            if (status) {
+                                registerAlarm();
+                                Toast.makeText(v.getContext(), getString(R.string.alarm_activated), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(v.getContext(), getString(R.string.unable_to_record_choice), Toast.LENGTH_SHORT).show());
+            } else {
+                userManager.updateSelectedRestaurant(null, null, null)
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(v.getContext(),getString(R.string.choice_canceled), Toast.LENGTH_SHORT).show();
+                            currentSelectedPlace = null;
+                            getUserSelectedRestaurant();
+                            cancelAlarm();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(v.getContext(), getString(R.string.unable_to_cancel_choice), Toast.LENGTH_SHORT).show());
+            }
 
 
-            }
         });
-        binding.detailsActivityFabBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.detailsActivityFabBack.setOnClickListener(v -> finish());
     }
 
     private boolean getNotificationActivationStatus() {
@@ -266,22 +221,19 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void getUserSelectedRestaurant() {
-        userManager.getUserData().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().getData().get(SELECTED_RESTAURANT_ID) != null) {
+        userManager.getUserData().addOnCompleteListener(task -> {
+            if (Objects.requireNonNull(task.getResult().getData()).get(SELECTED_RESTAURANT_ID) != null) {
 
-                    currentSelectedPlace = task.getResult().getData().get(SELECTED_RESTAURANT_ID).toString();
+                currentSelectedPlace = Objects.requireNonNull(task.getResult().getData().get(SELECTED_RESTAURANT_ID)).toString();
 
-                    if (currentSelectedPlace.equals(placeId)) {
-                        binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_circle_24, null));
-                        binding.detailsActivityFabSelectRestaurant.getDrawable().setColorFilter(getResources().getColor(R.color.green), PorterDuff.Mode.SRC_ATOP); //deprecated
-                    }
-                } else {
-                    binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_circle_up_24, null));
+                if (currentSelectedPlace.equals(placeId)) {
+                    binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_circle_24, null));
+               binding.detailsActivityFabSelectRestaurant.setColorFilter(R.color.green);
                 }
-
+            } else {
+                binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_circle_up_24, null));
             }
+
         });
     }
 
@@ -319,7 +271,6 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
     @SuppressLint("MissingPermission")
     private void callNow() {
-        // String phoneNumber = v.getTag().toString();
 
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse(getString(R.string.tel) + phoneNumber));
@@ -345,8 +296,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
         final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
                 (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+       final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         if (alarmManager != null) {
             Calendar calendar = Calendar.getInstance();

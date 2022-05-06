@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -63,11 +62,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final String FRAGMENT_LIST_TAG = "FRAGMENT_LIST_TAG";
     private static final String FRAGMENT_WORKMATES_TAG = "FRAGMENT_WORKMATES_TAG";
     private ActivityMainBinding binding;
-    private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private ActionBarDrawerToggle toggle;
     private ActivityResultLauncher<Intent> signInActivityResultLauncher;
     private final UserManager userManager = UserManager.getInstance();
     final int yourLunch = R.id.activity_main_drawer_your_lunch;
@@ -93,33 +90,29 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        if (savedInstanceState != null) {
-
-            switch (savedInstanceState.getString("CURRENT_FRAGMENT")) {
-                case "FRAGMENT_MAP_TAG" :
-                    try {
-                        configureMapViewFragment();
-                        break;
-                    } catch (IllegalAccessException | InstantiationException e) {
-                        e.printStackTrace();
-                    }
-                case "FRAGMENT_LIST_TAG" :
-                    try {
-                        configureListViewFragment();
-                        break;
-                    } catch (IllegalAccessException | InstantiationException e) {
-                        e.printStackTrace();
-                    }
-                case "FRAGMENT_WORKMATES_TAG" :
-                    try {
-                        configureWorkmatesFragment();
-                        break;
-                    } catch (IllegalAccessException | InstantiationException e) {
-                        e.printStackTrace();
-                    }
-            }
-       }
-
+        switch (savedInstanceState.getString("CURRENT_FRAGMENT")) {
+            case "FRAGMENT_MAP_TAG" :
+                try {
+                    configureMapViewFragment();
+                    break;
+                } catch (IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+            case "FRAGMENT_LIST_TAG" :
+                try {
+                    configureListViewFragment();
+                    break;
+                } catch (IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+            case "FRAGMENT_WORKMATES_TAG" :
+                try {
+                    configureWorkmatesFragment();
+                    break;
+                } catch (IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+        }
 
 
     }
@@ -190,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                         }
                         if (!userManager.isCurrentUserLogged()) {
+                            assert response != null;
                             Log.d(TAG, "onCreate: " + response.getError().toString());
                             showSnackBar(getString(R.string.login_obligation));
                             binding.bottomNavigation.setVisibility(View.GONE);
@@ -201,15 +195,15 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         configureActivity();
         initListeners();
         if (!UserManager.getInstance().isCurrentUserLogged()) {
+            binding.bottomNavigation.setVisibility(View.GONE);
+            binding.logInButton.setVisibility(View.VISIBLE);
             startSignInActivity();
         } else {
             binding.bottomNavigation.setVisibility(View.VISIBLE);
             binding.logInButton.setVisibility(View.GONE);
             try {
                 configureMapViewFragment();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
+            } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
@@ -257,7 +251,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private void startSignInActivity() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build());
+                new AuthUI.IdpConfig.FacebookBuilder().build(),
+                new AuthUI.IdpConfig.TwitterBuilder().build(),
+        new AuthUI.IdpConfig.EmailBuilder().build());
 
         // Launch the activity
         signInActivityResultLauncher.launch(
@@ -313,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private void configureDrawerLayout() {
         this.drawerLayout = binding.activityMainDrawerLayout;
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
@@ -395,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
     private void configureBottomNavigationView() {
-        bottomNavigationView = binding.bottomNavigation;
+        BottomNavigationView bottomNavigationView = binding.bottomNavigation;
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case pageMapView:

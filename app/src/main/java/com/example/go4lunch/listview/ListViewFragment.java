@@ -50,9 +50,7 @@ public class ListViewFragment extends Fragment {
     private static final String TAG = ListViewFragment.class.getSimpleName();
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private LinearLayoutManager layoutManager;
     private final ArrayList<GooglePlaces.Results> googlePLacesList = new ArrayList<>();
-    private ListViewViewModel listViewViewModel;
     private ListViewAdapter adapter;
     private FragmentListViewBinding binding;
     private LiveData<ListViewViewState> livedata;
@@ -74,8 +72,8 @@ public class ListViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Places.initialize(getActivity().getApplicationContext(), MAPS_API_KEY);
-        placesClient = Places.createClient(getActivity().getApplicationContext());
+        Places.initialize(requireActivity().getApplicationContext(), MAPS_API_KEY);
+        placesClient = Places.createClient(requireActivity().getApplicationContext());
 
     }
 
@@ -83,12 +81,12 @@ public class ListViewFragment extends Fragment {
 
         progressBar = binding.progressBar;
         recyclerView = binding.recyclerView;
-        layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
         ViewModelFactory vm = ViewModelFactory.getInstance();
-        listViewViewModel = new ViewModelProvider(this, vm).get(ListViewViewModel.class);
+        ListViewViewModel listViewViewModel = new ViewModelProvider(this, vm).get(ListViewViewModel.class);
         listViewViewModel.getListViewLiveData().observe(getViewLifecycleOwner(), listViewViewState -> {
 
 
@@ -126,10 +124,10 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.nav_menu, menu);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.nav_search).getActionView();
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

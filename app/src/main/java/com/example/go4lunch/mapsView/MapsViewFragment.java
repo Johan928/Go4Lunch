@@ -24,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.go4lunch.R;
@@ -49,17 +48,17 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = "123";
-    private MapsViewViewModel mapsViewViewModel;
-    private ArrayList<GooglePlaces.Results> googlePlaces = new ArrayList<>();
+    private final ArrayList<GooglePlaces.Results> googlePlaces = new ArrayList<>();
     private GoogleMap googleMap;
-    private LiveData<MapsViewViewState> liveData;
     private Location myCurrentLocation;
     private boolean firstStart = true;
     private List<User> selectedRestaurantList;
@@ -83,46 +82,44 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Places.initialize(getActivity().getApplicationContext(), MAPS_API_KEY);
-        placesClient = Places.createClient(getActivity().getApplicationContext());
+        Places.initialize(requireActivity().getApplicationContext(), MAPS_API_KEY);
+        placesClient = Places.createClient(requireActivity().getApplicationContext());
 
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        progressBar = view.findViewById(R.id.progress_bar_maps);
-
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setVisibility(View.GONE);
+        progressBar = binding.progressBarMaps;
         ViewModelFactory vmf = ViewModelFactory.getInstance();
-        mapsViewViewModel = new ViewModelProvider(this, vmf).get(MapsViewViewModel.class);
-        liveData = mapsViewViewModel.getMediatorLiveData();
-        liveData.observe(getViewLifecycleOwner(), new Observer<MapsViewViewState>() {
-            @Override
-            public void onChanged(MapsViewViewState mapsViewViewState) {
-                if (mapsViewViewState.getLocation() != null && mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
-                    progressBar.setVisibility(View.GONE);
+        MapsViewViewModel mapsViewViewModel = new ViewModelProvider(this, vmf).get(MapsViewViewModel.class);
+        LiveData<MapsViewViewState> liveData = mapsViewViewModel.getMediatorLiveData();
+        liveData.observe(getViewLifecycleOwner(), mapsViewViewState -> {
+            if (mapsViewViewState.getLocation() != null && mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
+                progressBar.setVisibility(View.GONE);
+                bottomNavigationView.setVisibility(View.VISIBLE);
+                if (mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
 
-                    if (mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
+                    selectedRestaurantList = mapsViewViewState.getSelectedRestaurantsList();
+                    googlePlaces.clear();
+                    googlePlaces.addAll(mapsViewViewState.getPlaces());
+                    updatePlacesOnMap(googleMap, googlePlaces);
+                }
 
-                        selectedRestaurantList = mapsViewViewState.getSelectedRestaurantsList();
-                        googlePlaces.clear();
-                        googlePlaces.addAll(mapsViewViewState.getPlaces());
-                        updatePlacesOnMap(googleMap, googlePlaces);
-                    }
-
-                    if (mapsViewViewState.getLocation() != null) {
-                        myCurrentLocation = mapsViewViewState.getLocation();
-                        if (firstStart && googleMap != null) {
-                            LatLng home = new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude());
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(home, 12));
-                            firstStart = false;
-                        }
-
+                if (mapsViewViewState.getLocation() != null) {
+                    myCurrentLocation = mapsViewViewState.getLocation();
+                    if (firstStart && googleMap != null) {
+                        LatLng home = new LatLng(myCurrentLocation.getLatitude(), myCurrentLocation.getLongitude());
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(home, 12));
+                        firstStart = false;
                     }
 
                 }
 
             }
+
         });
 
     }
@@ -131,13 +128,15 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_maps_view, container, false);
+
+        binding = FragmentMapsViewBinding.inflate(inflater, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
 
-        return view;
+        return binding.getRoot();
+
     }
 
 
@@ -158,6 +157,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void updatePlacesOnMap(GoogleMap googleMap, ArrayList<GooglePlaces.Results> googlePlaces) {
         LatLng point;
         if (googleMap != null) {
@@ -186,7 +186,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setOnMarkerClickListener(marker -> {
 
             Intent intent = new Intent(getContext(), DetailsActivity.class);
-            String placeId = marker.getTag().toString();
+            String placeId = Objects.requireNonNull(marker.getTag()).toString();
             intent.putExtra("placeId", placeId);
             requireContext().startActivity(intent);
             return false;
@@ -199,10 +199,10 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
         inflater.inflate(R.menu.nav_menu, menu);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.nav_search).getActionView();
         searchView.setBackgroundColor(getResources().getColor(R.color.white));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

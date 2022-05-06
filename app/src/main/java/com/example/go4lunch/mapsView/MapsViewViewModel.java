@@ -19,16 +19,10 @@ public class MapsViewViewModel extends ViewModel {
 
     private static final String TAG = "123";
     private final MediatorLiveData<MapsViewViewState> mMediator = new MediatorLiveData();
-    private final NearbySearchRepository nearbySearchRepository;
-    private final LocationRepository locationRepository;
-    private final UserRepository userRepository;
     private LiveData<List<GooglePlaces.Results>> places = new MutableLiveData<>();
 
 
     public MapsViewViewModel(LocationRepository locationRepository, NearbySearchRepository nearbySearchRepository, UserRepository userRepository) {
-        this.nearbySearchRepository = nearbySearchRepository;
-        this.locationRepository = locationRepository;
-        this.userRepository = userRepository;
 
         LiveData<Location> location = locationRepository.getLocationLiveData();
         LiveData<List<User>> selectedRestaurantsList = userRepository.getUserList();

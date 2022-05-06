@@ -1,13 +1,11 @@
 package com.example.go4lunch.Adapter;
 
-import static android.content.ContentValues.TAG;
 import static com.example.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,9 +40,8 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
     private final LatLng myPosition;
     private MapsAPI mapsAPI;
     private PlaceRepository placeRepository;
-    private UserManager userManager = UserManager.getInstance();
-    private int workmatesNumber;
-    private List<User> selectedRestaurantList;
+    private final UserManager userManager = UserManager.getInstance();
+    private final List<User> selectedRestaurantList;
     private static final String SELECTED_RESTAURANT_FIELD = "selectedRestaurantPlaceId";
     //
 
@@ -85,14 +83,14 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         GooglePlaces.Results googlePlaces = googlePlacesList.get(position);
-        workmatesNumber = 0;
+        int workmatesNumber = 0;
         for (User userSelectedRestaurant : selectedRestaurantList) {
                        if (userSelectedRestaurant.getSelectedRestaurantPlaceId() != null && userSelectedRestaurant.getSelectedRestaurantPlaceId().equals(googlePlaces.getPlace_id())) {
                            workmatesNumber += 1;
                        }
         }
         StringBuilder stringBuilder2 = new StringBuilder();
-        stringBuilder2.append("(").append(String.valueOf(workmatesNumber)).append(")");
+        stringBuilder2.append("(").append(workmatesNumber).append(")");
         holder.textview_number_of_workmates.setText(stringBuilder2);
 
         holder.textview_name.setText(googlePlaces.getName()); // name
@@ -152,13 +150,12 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
                     .into(holder.imageView);
         } else {
             //On affiche une image par défaut
-            holder.imageView.setImageDrawable(context.getDrawable(R.drawable.restaurant));
+            holder.imageView.setImageDrawable(AppCompatResources.getDrawable(context,R.drawable.restaurant));
         }
         holder.textview_name.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), DetailsActivity.class);
             String placeId = googlePlaces.getPlace_id();
             intent.putExtra("placeId",placeId);
-           // Log.d(TAG, "onClick: " + placeId);
             context.startActivity(intent);
         });
 

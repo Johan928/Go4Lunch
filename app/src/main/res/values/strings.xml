@@ -56,6 +56,8 @@
     <string name="channel_description" translatable="false">Notification when Lunch time has come</string>
     <string name="activate_notification_at_12_00">Activate Notification at 12:00</string>
     <string name="alarm_activated">Alarm activated</string>
+    <string name="is_eating_at">\u00020 is eating at \u0020</string>
+    <string name="not_decided_yet">\u0020 hasn\'t decided yet.</string>
 
 
 </resources>

@@ -63,19 +63,19 @@ public class WorkmatesAdapter extends ListAdapter<User, WorkmatesAdapter.ViewHol
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         User user = userList.get(position);
-
+        StringBuilder stringBuilder = new StringBuilder();
 
         if (user.getSelectedRestaurantPlaceId() != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(user.getUsername()).append(" is eating at ") .append(user.getSelectedRestaurantName());
+
+            stringBuilder.append(user.getUsername()).append(context.getString(R.string.is_eating_at)) .append(user.getSelectedRestaurantName());
             holder.textview_name.setText(stringBuilder);
             holder.textview_name.setTextColor(context.getResources().getColor(R.color.black));
             holder.textview_name.setTag(user.getSelectedRestaurantPlaceId());
 
 
         } else {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(user.getUsername()).append(" hasn't decided yet.");
+
+            stringBuilder.append(user.getUsername()).append(context.getString(R.string.not_decided_yet));
             holder.textview_name.setText(stringBuilder);
             holder.textview_name.setTextColor(context.getResources().getColor(R.color.grey));
         }
@@ -89,19 +89,14 @@ public class WorkmatesAdapter extends ListAdapter<User, WorkmatesAdapter.ViewHol
                     .into(holder.imageView);
         }
 
-        holder.textview_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getTag() != null) {
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    String placeId = v.getTag().toString();
-                    intent.putExtra("placeId", placeId);
-                    context.startActivity(intent);
-                }
-
+        holder.textview_name.setOnClickListener(v -> {
+            if (v.getTag() != null) {
+                Intent intent = new Intent(context, DetailsActivity.class);
+                String placeId = v.getTag().toString();
+                intent.putExtra("placeId", placeId);
+                context.startActivity(intent);
             }
         });
-
 
     }
 

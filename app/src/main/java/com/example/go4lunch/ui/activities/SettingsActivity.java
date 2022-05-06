@@ -2,14 +2,11 @@ package com.example.go4lunch.ui.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.go4lunch.databinding.ActivitySettingsBinding;
-import com.example.go4lunch.user.UserManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -26,12 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(view);
         getSharedPreferences();
 
-        binding.notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                updateSharedPreferences(isChecked);
-            }
-        });
+        binding.notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> updateSharedPreferences(isChecked));
     }
 
     private void updateSharedPreferences(Boolean isChecked) {
