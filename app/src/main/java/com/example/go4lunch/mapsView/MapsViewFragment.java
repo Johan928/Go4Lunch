@@ -96,7 +96,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         progressBar = binding.progressBarMaps;
         ViewModelFactory vmf = ViewModelFactory.getInstance();
         MapsViewViewModel mapsViewViewModel = new ViewModelProvider(this, vmf).get(MapsViewViewModel.class);
-        LiveData<MapsViewViewState> liveData = mapsViewViewModel.getMediatorLiveData();
+        LiveData<MapsViewViewState> liveData = mapsViewViewModel.getMapsViewLiveData();
         liveData.observe(getViewLifecycleOwner(), mapsViewViewState -> {
             if (mapsViewViewState.getLocation() != null && mapsViewViewState.getPlaces() != null && mapsViewViewState.getSelectedRestaurantsList() != null) {
                 progressBar.setVisibility(View.GONE);

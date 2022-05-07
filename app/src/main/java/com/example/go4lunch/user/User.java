@@ -2,6 +2,7 @@ package com.example.go4lunch.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class User {
     private String uid;
@@ -79,5 +80,31 @@ public class User {
 
     public void setSelectedRestaurantAddress(String selectRestaurantAddress) {
         this.selectedRestaurantAddress = selectRestaurantAddress;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(uid, user.uid) && Objects.equals(username, user.username) && Objects.equals(urlPicture, user.urlPicture) && Objects.equals(selectedRestaurantPlaceId, user.selectedRestaurantPlaceId) && Objects.equals(favoriteRestaurantsList, user.favoriteRestaurantsList) && Objects.equals(selectedRestaurantName, user.selectedRestaurantName) && Objects.equals(selectedRestaurantAddress, user.selectedRestaurantAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, username, urlPicture, selectedRestaurantPlaceId, favoriteRestaurantsList, selectedRestaurantName, selectedRestaurantAddress);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", username='" + username + '\'' +
+                ", urlPicture='" + urlPicture + '\'' +
+                ", selectedRestaurantPlaceId='" + selectedRestaurantPlaceId + '\'' +
+                ", favoriteRestaurantsList=" + favoriteRestaurantsList +
+                ", selectedRestaurantName='" + selectedRestaurantName + '\'' +
+                ", selectedRestaurantAddress='" + selectedRestaurantAddress + '\'' +
+                '}';
     }
 }

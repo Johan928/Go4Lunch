@@ -19,7 +19,7 @@ public class MapsViewViewModel extends ViewModel {
 
     private static final String TAG = "123";
     private final MediatorLiveData<MapsViewViewState> mMediator = new MediatorLiveData();
-    private LiveData<List<GooglePlaces.Results>> places = new MutableLiveData<>();
+   private LiveData<List<GooglePlaces.Results>> places = new MutableLiveData<>();
 
 
     public MapsViewViewModel(LocationRepository locationRepository, NearbySearchRepository nearbySearchRepository, UserRepository userRepository) {
@@ -50,7 +50,7 @@ public class MapsViewViewModel extends ViewModel {
     }
 
 
-    public LiveData<MapsViewViewState> getMediatorLiveData() {
+    public LiveData<MapsViewViewState> getMapsViewLiveData() {
         return mMediator;
     }
 

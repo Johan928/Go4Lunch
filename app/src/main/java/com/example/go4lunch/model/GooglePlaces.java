@@ -1,6 +1,7 @@
 package com.example.go4lunch.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GooglePlaces {
 
@@ -235,6 +236,45 @@ public class GooglePlaces {
 
         public void setFormatted_address(String formatted_address) {
             this.formatted_address = formatted_address;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Results results = (Results) o;
+            return user_ratings_total == results.user_ratings_total && price_level == results.price_level && Objects.equals(opening_hours, results.opening_hours) && Objects.equals(vicinity, results.vicinity) && Objects.equals(types, results.types) && Objects.equals(scope, results.scope) && Objects.equals(reference, results.reference) && Objects.equals(rating, results.rating) && Objects.equals(plus_code, results.plus_code) && Objects.equals(place_id, results.place_id) && Objects.equals(photos, results.photos) && Objects.equals(name, results.name) && Objects.equals(icon_mask_base_uri, results.icon_mask_base_uri) && Objects.equals(icon_background_color, results.icon_background_color) && Objects.equals(icon, results.icon) && Objects.equals(geometry, results.geometry) && Objects.equals(business_status, results.business_status) && Objects.equals(website, results.website) && Objects.equals(formatted_phone_number, results.formatted_phone_number) && Objects.equals(formatted_address, results.formatted_address);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(opening_hours, vicinity, user_ratings_total, types, scope, reference, rating, price_level, plus_code, place_id, photos, name, icon_mask_base_uri, icon_background_color, icon, geometry, business_status, website, formatted_phone_number, formatted_address);
+        }
+
+        @Override
+        public String toString() {
+            return "Results{" +
+                    "opening_hours=" + opening_hours +
+                    ", vicinity='" + vicinity + '\'' +
+                    ", user_ratings_total=" + user_ratings_total +
+                    ", types=" + types +
+                    ", scope='" + scope + '\'' +
+                    ", reference='" + reference + '\'' +
+                    ", rating=" + rating +
+                    ", price_level=" + price_level +
+                    ", plus_code=" + plus_code +
+                    ", place_id='" + place_id + '\'' +
+                    ", photos=" + photos +
+                    ", name='" + name + '\'' +
+                    ", icon_mask_base_uri='" + icon_mask_base_uri + '\'' +
+                    ", icon_background_color='" + icon_background_color + '\'' +
+                    ", icon='" + icon + '\'' +
+                    ", geometry=" + geometry +
+                    ", business_status='" + business_status + '\'' +
+                    ", website='" + website + '\'' +
+                    ", formatted_phone_number='" + formatted_phone_number + '\'' +
+                    ", formatted_address='" + formatted_address + '\'' +
+                    '}';
         }
     }
 

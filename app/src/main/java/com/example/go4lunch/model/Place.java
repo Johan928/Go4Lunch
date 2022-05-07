@@ -3,6 +3,7 @@ package com.example.go4lunch.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Objects;
 
 public  class Place {
     @SerializedName("status")
@@ -676,5 +677,27 @@ public  class Place {
         public void setLong_name(String long_name) {
             this.long_name = long_name;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return Objects.equals(status, place.status) && Objects.equals(result, place.result) && Objects.equals(html_attributions, place.html_attributions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status, result, html_attributions);
+    }
+
+    @Override
+    public String toString() {
+        return "Place{" +
+                "status='" + status + '\'' +
+                ", result=" + result +
+                ", html_attributions=" + html_attributions +
+                '}';
     }
 }
