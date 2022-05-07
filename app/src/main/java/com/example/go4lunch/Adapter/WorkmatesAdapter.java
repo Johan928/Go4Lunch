@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,7 +71,7 @@ public class WorkmatesAdapter extends ListAdapter<User, WorkmatesAdapter.ViewHol
 
             stringBuilder.append(user.getUsername()).append(context.getString(R.string.is_eating_at)) .append(user.getSelectedRestaurantName());
             holder.textview_name.setText(stringBuilder);
-            holder.textview_name.setTextColor(context.getResources().getColor(R.color.black));
+            holder.textview_name.setTextColor(ContextCompat.getColor(context,R.color.black));
             holder.textview_name.setTag(user.getSelectedRestaurantPlaceId());
 
 
@@ -77,7 +79,7 @@ public class WorkmatesAdapter extends ListAdapter<User, WorkmatesAdapter.ViewHol
 
             stringBuilder.append(user.getUsername()).append(context.getString(R.string.not_decided_yet));
             holder.textview_name.setText(stringBuilder);
-            holder.textview_name.setTextColor(context.getResources().getColor(R.color.grey));
+            holder.textview_name.setTextColor(ContextCompat.getColor(context,R.color.grey));
         }
 
 

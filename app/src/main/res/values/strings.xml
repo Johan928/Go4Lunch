@@ -13,11 +13,11 @@
     <string name="error_not_connected">You must log in !</string>
     <string name="error_authentication_canceled">loging in canceled</string>
     <string name="error_no_internet">Check your internet connexion !</string>
-    <string name="error_unknown_error">Unkown error has happened</string>
+    <string name="error_unknown_error">Unknown error has happened</string>
     <string name="connection_succeed">logged successfully !</string>
     <string name="disconnected">you are now disconnected !</string>
 
-    <string name="info_no_email_found">No mail adress</string>
+    <string name="info_no_email_found">No mail address</string>
     <string name="info_no_username_found">No username</string>
 
     <string name="facebook_application_id">258185523195399</string>
@@ -29,7 +29,7 @@
     <string name="closed">Closed</string>
     <string name="is_joining">\u0020 is joining </string>
     <string name="avatar">avatar</string>
-    <string name="adress">adress</string>
+    <string name="address">address</string>
     <string name="opening_hours">opening_hours</string>
     <string name="restaurant_picture">restaurant_picture</string>
     <string name="button_to_choose_your_daily_restaurant">button to choose your daily restaurant</string>
@@ -56,8 +56,10 @@
     <string name="channel_description" translatable="false">Notification when Lunch time has come</string>
     <string name="activate_notification_at_12_00">Activate Notification at 12:00</string>
     <string name="alarm_activated">Alarm activated</string>
-    <string name="is_eating_at">\u00020 is eating at \u0020</string>
+    <string name="is_eating_at">\u0020 is eating at \u0020</string>
     <string name="not_decided_yet">\u0020 hasn\'t decided yet.</string>
+    <string name="no_one_else_is_coming">No one else is coming</string>
+    <string name="details_activity_back_button">details Activity back button</string>
 
 
 </resources>

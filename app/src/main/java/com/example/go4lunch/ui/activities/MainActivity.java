@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     final int pageWorkmates = R.id.page_workmates;
     private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
     private static final String CHANNEL_ID = "10";
+    private ActionBarDrawerToggle toggle;
 
 
     @Override
@@ -151,8 +152,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         updateUiWithUserData();
                         try {
                             if (userManager.isCurrentUserLogged()) {
-                                binding.bottomNavigation.setVisibility(View.VISIBLE);
                                 binding.logInButton.setVisibility(View.GONE);
+                                binding.bottomNavigation.setVisibility(View.VISIBLE);
+                                binding.activityMainDrawerLayout.setVisibility(View.VISIBLE);
                                 configureMapViewFragment();
                             }
                         } catch (IllegalAccessException | InstantiationException e) {
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                             binding.bottomNavigation.setVisibility(View.GONE);
                             binding.logInButton.setVisibility(View.VISIBLE);
 
+                            binding.activityMainDrawerLayout.setVisibility(View.GONE);
 
                         } else if (response.getError() != null) {
                             if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
@@ -183,11 +186,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                         }
                         if (!userManager.isCurrentUserLogged()) {
-                            assert response != null;
-                            Log.d(TAG, "onCreate: " + response.getError().toString());
+
                             showSnackBar(getString(R.string.login_obligation));
                             binding.bottomNavigation.setVisibility(View.GONE);
                             binding.logInButton.setVisibility(View.VISIBLE);
+
+                            binding.activityMainDrawerLayout.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -309,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private void configureDrawerLayout() {
         this.drawerLayout = binding.activityMainDrawerLayout;
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }

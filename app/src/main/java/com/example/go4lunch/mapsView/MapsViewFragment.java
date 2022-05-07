@@ -22,6 +22,7 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -201,7 +202,7 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         inflater.inflate(R.menu.nav_menu, menu);
         SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.nav_search).getActionView();
-        searchView.setBackgroundColor(getResources().getColor(R.color.white));
+        searchView.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

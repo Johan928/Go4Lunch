@@ -76,7 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 stringBuilder.append(user.getUsername());
             }
         } else {
-            stringBuilder.append("No one else is coming");
+            stringBuilder.append(context.getString(R.string.no_one_else_is_coming));
         }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -87,7 +87,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bowl_icon)
                 .setContentTitle("Time for Lunch at " + restaurantName)
-                .setContentText(context.getString(R.string.adress) + " : " +  restaurantAddress)
+                .setContentText(context.getString(R.string.address) + " : " +  restaurantAddress)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText("\n" + context.getString(R.string.icon_workmates_text) + " : " + stringBuilder))
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

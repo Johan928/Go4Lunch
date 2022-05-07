@@ -24,7 +24,7 @@
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/ic_search.xml" value="0.1655" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/maps_poi_green.xml" value="0.1655" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/drawable/maps_poi_red.xml" value="0.1655" />
-        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_details.xml" value="0.33" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_details.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/activity_settings.xml" value="0.25" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_list_view.xml" value="0.20462962962962963" />
@@ -32,7 +32,7 @@
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_maps_view.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/fragment_workmates.xml" value="0.10465116279069768" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/item_restaurant.xml" value="0.25" />
-        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/item_workmate.xml" value="0.3109375" />
+        <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/layout/item_workmate.xml" value="0.25" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/activity_main_nav_menu.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
         <entry key="..\:/Users/johan/AndroidStudioProjects/Go4Lunch/app/src/main/res/menu/nav_menu.xml" value="0.55" />

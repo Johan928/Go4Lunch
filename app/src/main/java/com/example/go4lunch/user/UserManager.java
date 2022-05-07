@@ -2,10 +2,15 @@ package com.example.go4lunch.user;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.go4lunch.repositories.UserRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 public class UserManager {
 
@@ -31,16 +36,23 @@ public class UserManager {
     }
 
     public FirebaseUser getCurrentUser() {
-        return UserRepository.getInstance().getCurrentUser();
+        return userRepository.getCurrentUser();
     }
 
+   public String getCurrentUserId() {
+        return userRepository.getCurrentUserId();
+   }
+
+   public Task<QuerySnapshot> getUserListInATask()  {
+        return userRepository.getUserListInATask();
+   }
     public Task<Void> signOut(Context context) {
-        return UserRepository.getInstance().signOut(context);
+        return userRepository.signOut(context);
     }
-
+    public Task<Void> deleteUser(Context context) {return userRepository.deleteUser(context);}
 
     public boolean isCurrentUserLogged() {
-        return (UserRepository.getInstance().getCurrentUser() != null);
+        return (userRepository.getCurrentUser() != null);
     }
     public void createUser(){
          userRepository.createUser();
@@ -57,6 +69,18 @@ public class UserManager {
     public Task<DocumentSnapshot> getUserData() {
         return   userRepository.getUserData();
     }
+
+    public Task<DocumentSnapshot> getUserDataFromUid(String uid) {
+        return userRepository.getUserDataFromUid(uid);
+    }
+
+    public LiveData<List<User>> getUserList() {
+        return userRepository.getUserList();
+    }
+    public LiveData<List<User>> getUserJoiningList(String placeId) {
+        return userRepository.getUserJoiningList(placeId);
+    }
+
 
 
 }

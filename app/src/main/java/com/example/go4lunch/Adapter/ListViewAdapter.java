@@ -82,10 +82,10 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        GooglePlaces.Results googlePlaces = googlePlacesList.get(position);
+        GooglePlaces.Results googlePlace = googlePlacesList.get(position);
         int workmatesNumber = 0;
         for (User userSelectedRestaurant : selectedRestaurantList) {
-                       if (userSelectedRestaurant.getSelectedRestaurantPlaceId() != null && userSelectedRestaurant.getSelectedRestaurantPlaceId().equals(googlePlaces.getPlace_id())) {
+                       if (userSelectedRestaurant.getSelectedRestaurantPlaceId() != null && userSelectedRestaurant.getSelectedRestaurantPlaceId().equals(googlePlace.getPlace_id())) {
                            workmatesNumber += 1;
                        }
         }
@@ -93,10 +93,10 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         stringBuilder2.append("(").append(workmatesNumber).append(")");
         holder.textview_number_of_workmates.setText(stringBuilder2);
 
-        holder.textview_name.setText(googlePlaces.getName()); // name
+        holder.textview_name.setText(googlePlace.getName()); // name
 
-        if (googlePlaces.getOpening_hours() != null) { // opened or close
-            if (googlePlaces.getOpening_hours().getOpen_now()) {
+        if (googlePlace.getOpening_hours() != null) { // opened or close
+            if (googlePlace.getOpening_hours().getOpen_now()) {
                 holder.textview_closing_hour.setText(R.string.opened);
             } else {
                 holder.textview_closing_hour.setText(R.string.closed);
@@ -106,7 +106,7 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
         }
 
         float[] results = new float[1];
-        Location.distanceBetween(myPosition.latitude, myPosition.longitude, googlePlaces.getGeometry().getLocation().getLat(), googlePlaces.getGeometry().getLocation().getLng(), results);
+        Location.distanceBetween(myPosition.latitude, myPosition.longitude, googlePlace.getGeometry().getLocation().getLat(), googlePlace.getGeometry().getLocation().getLng(), results);
         float distance = results[0];
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -114,14 +114,36 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
                      .append(context.getResources().getString(R.string.mesuremetre));
         holder.textview_distance.setText(stringBuilder); //distance
 
-        holder.textview_type_and_address.setText(googlePlaces.getVicinity()); // address
+        holder.textview_type_and_address.setText(googlePlace.getVicinity()); // address
 
-        if (googlePlaces.getRating() != null) { //rating and conversion in stars
+        convertRatingToStars(googlePlace, holder);
+        String url;
+        if (googlePlace.getPhotos() != null) {
+            url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + googlePlace.getPhotos().get(0).getPhoto_reference() + "&key=" + MAPS_API_KEY;
+            Glide.with(context)
+                    .load(url)
+                    .apply(RequestOptions.centerInsideTransform())
+                    .into(holder.imageView);
+        } else {
+            //On affiche une image par défaut
+            holder.imageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.restaurant));
+        }
+        holder.textview_name.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+            String placeId = googlePlace.getPlace_id();
+            intent.putExtra("placeId", placeId);
+            context.startActivity(intent);
+        });
+
+    }
+
+    private void convertRatingToStars(GooglePlaces.Results googlePlace, ViewHolder holder) {
+        if (googlePlace.getRating() != null) { //rating and conversion in stars
 
             holder.star1.setVisibility(View.GONE);
             holder.star2.setVisibility(View.GONE);
             holder.star3.setVisibility(View.GONE);
-            Double rating = googlePlaces.getRating();
+            Double rating = googlePlace.getRating();
 
             holder.textview_rating.setVisibility(View.GONE); //hiding note textview
             if (rating >= 2) {
@@ -141,24 +163,6 @@ public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewA
             holder.star2.setVisibility(View.GONE);
             holder.star3.setVisibility(View.GONE);
         }
-        String url;
-        if (googlePlaces.getPhotos() != null) {
-            url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" + googlePlaces.getPhotos().get(0).getPhoto_reference() + "&key=" + MAPS_API_KEY;
-            Glide.with(context)
-                    .load(url)
-                    .apply(RequestOptions.centerInsideTransform())
-                    .into(holder.imageView);
-        } else {
-            //On affiche une image par défaut
-            holder.imageView.setImageDrawable(AppCompatResources.getDrawable(context,R.drawable.restaurant));
-        }
-        holder.textview_name.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
-            String placeId = googlePlaces.getPlace_id();
-            intent.putExtra("placeId",placeId);
-            context.startActivity(intent);
-        });
-
     }
 
     @Override

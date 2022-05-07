@@ -8,20 +8,23 @@
         android:contentDescription="@string/avatar"
         android:layout_width="92dp"
         android:layout_height="92dp"
-        android:src="@color/personnal_red"
+        android:src="@drawable/ic_round_android_24"
         android:padding="8dp"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <TextView
         android:id="@+id/textview_isjoining"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/is_joining"
         android:textStyle="bold"
         android:textSize="16sp"
+        android:layout_margin="8dp"
         app:layout_constraintStart_toEndOf="@id/imageview_avatar"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

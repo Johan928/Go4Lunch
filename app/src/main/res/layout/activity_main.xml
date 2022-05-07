@@ -3,7 +3,9 @@
 <LinearLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:id="@+id/activity_main_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal">
+
 
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -59,16 +61,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/Theme.Go4LunchBottomNavigation"
             app:menu="@menu/bottom_navigation_menu" />
-        <Button
-            android:id="@+id/log_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="0.5dp"
-            android:text="LOG IN"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -105,6 +98,14 @@
 
 
 </androidx.drawerlayout.widget.DrawerLayout>
-
+    <Button
+        android:id="@+id/log_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="0.5dp"
+        android:text="LOG IN"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        />
 
 </LinearLayout>

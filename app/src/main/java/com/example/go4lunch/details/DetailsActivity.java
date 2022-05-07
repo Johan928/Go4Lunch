@@ -228,7 +228,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
                 if (currentSelectedPlace.equals(placeId)) {
                     binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_check_circle_24, null));
-               binding.detailsActivityFabSelectRestaurant.setColorFilter(R.color.green);
+               binding.detailsActivityFabSelectRestaurant.setColorFilter(ResourcesCompat.getColor(getResources(),R.color.green,null));
                 }
             } else {
                 binding.detailsActivityFabSelectRestaurant.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_arrow_circle_up_24, null));

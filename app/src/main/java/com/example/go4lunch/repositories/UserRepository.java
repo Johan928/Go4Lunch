@@ -58,13 +58,13 @@ public class UserRepository {
         return AuthUI.getInstance().delete(context);
     }
 
-    private String getCurrentUserId() {
+    public String getCurrentUserId() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         return (user != null) ? user.getUid() : null;
     }
 
     // Get the Collection Reference
-    private CollectionReference getUsersCollection() {
+    public CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
@@ -131,9 +131,6 @@ public class UserRepository {
     }
 
 
-
-
-
     public LiveData<List<User>> getUserList() {
         String uid = this.getCurrentUserId();
         List<User> userList = new ArrayList<>();
@@ -185,9 +182,9 @@ public class UserRepository {
 
     }
 
-    private void doGetUserJoiningList(String placeId) {
+   /* private void doGetUserJoiningList(String placeId) {
         getUserJoiningList(placeId);
-    }
+    }*/
 
     public Task<Void> updateSelectedRestaurant(String placeId,String restaurantName,String restaurantAddress) {
 

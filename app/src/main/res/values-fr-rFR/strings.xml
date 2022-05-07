@@ -25,7 +25,7 @@
     <string name="closed">Fermé</string>
     <string name="is_joining">\u0020 y va</string>
     <string name="avatar">avatar</string>
-    <string name="adress">adresse</string>
+    <string name="address">adresse</string>
     <string name="opening_hours">horaires d\'ouverture</string>
     <string name="restaurant_picture">image du restaurant</string>
     <string name="button_to_choose_your_daily_restaurant">bouton pour choisir son restaurant du jour</string>
@@ -51,4 +51,6 @@
     <string name="alarm_activated">Alarme activée</string>
     <string name="is_eating_at">\u0020mange à \u0020</string>
     <string name="not_decided_yet">\u0020n\'a pas encore choisi</string>
+    <string name="no_one_else_is_coming">Personne d\'autre n\'y va</string>
+    <string name="details_activity_back_button">bouton retour activité détails</string>
 </resources>
