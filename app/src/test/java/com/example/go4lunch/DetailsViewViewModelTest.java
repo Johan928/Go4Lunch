@@ -1,6 +1,7 @@
 package com.example.go4lunch;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.util.Log;
 
@@ -17,13 +18,16 @@ import com.example.go4lunch.user.User;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
 
 import Utils.LiveDataTestUtils;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DetailsViewViewModelTest {
     @Rule
     public final InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -32,26 +36,24 @@ public class DetailsViewViewModelTest {
     private final UserRepository userRepository = Mockito.mock(UserRepository.class);
 
 
-    private final MutableLiveData<Place> getPlaceLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<User>> selectedRestaurantsList = new MutableLiveData<>();
+    private final MutableLiveData<Place> getPlace = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> getUserList = new MutableLiveData<>();
 
     private DetailsViewModel detailsViewModel;
 
     @Before
     public void setup() {
 
-
-        Mockito.doReturn(getPlaceLiveData)
+        Mockito.doReturn(getPlace)
                 .when(placeRepository)
                 .getPlaceLiveDetails("PlaceID");
-        Mockito.doReturn(selectedRestaurantsList)
+        Mockito.doReturn(getUserList)
                 .when(userRepository)
-                .getUserList();
+                .getUserJoiningList("PlaceID");
 
+        getPlace.setValue(getPlaceInfoIn());
+        getUserList.setValue(getDefaultUsersIn());
 
-        selectedRestaurantsList.setValue(getDefaultUsersIn());
-        getPlaceLiveData.setValue(getPlaceInfoIn());
-        System.out.println(getPlaceLiveData.getValue().getResult().getPlace_id());
 
         detailsViewModel = new DetailsViewModel(placeRepository, userRepository);
     }
@@ -59,12 +61,11 @@ public class DetailsViewViewModelTest {
 
     @Test
     public void nominalCase() {
-
         LiveDataTestUtils.observeForTesting(detailsViewModel.getDetailsViewLiveData("PlaceID"), new LiveDataTestUtils.OnObservedListener<DetailsViewState>() {
             @Override
             public void onObserved(DetailsViewState detailsViewState) {
-                
                 assertEquals(getDefaultDetailsViewState(),detailsViewState);
+
             }
         });
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DetailsViewModel extends ViewModel {
     private static final String TAG = "111" ;
-    private final MediatorLiveData<DetailsViewState> mMediator = new MediatorLiveData();
+    private final MediatorLiveData<DetailsViewState> mMediator = new MediatorLiveData<>();
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
 
@@ -23,7 +23,7 @@ public class DetailsViewModel extends ViewModel {
         this.userRepository = userRepository;
     }
 
-    private void loadData(String placeId) {
+    public void loadData(String placeId) {
 
         LiveData<Place> placeLiveData = placeRepository.getPlaceLiveDetails(placeId);
         LiveData<List<User>> userList = userRepository.getUserJoiningList(placeId);

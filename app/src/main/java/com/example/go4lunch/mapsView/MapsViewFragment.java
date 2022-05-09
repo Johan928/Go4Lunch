@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -158,17 +159,17 @@ public class MapsViewFragment extends Fragment implements OnMapReadyCallback {
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+
     private void updatePlacesOnMap(GoogleMap googleMap, ArrayList<GooglePlaces.Results> googlePlaces) {
         LatLng point;
         if (googleMap != null) {
             googleMap.clear();
 
         for (GooglePlaces.Results r : googlePlaces) {
-            BitmapDescriptor bitmapDescriptor = getMarkerIconFromDrawable(getResources().getDrawable(R.drawable.maps_poi_red, null));
+            BitmapDescriptor bitmapDescriptor = getMarkerIconFromDrawable(Objects.requireNonNull(ResourcesCompat.getDrawable(getResources(), R.drawable.maps_poi_red, null)));
             for (User ds : selectedRestaurantList) {
                 if (ds.getSelectedRestaurantPlaceId() != null && ds.getSelectedRestaurantPlaceId().equals(r.getPlace_id())) {
-                    bitmapDescriptor = getMarkerIconFromDrawable(getResources().getDrawable(R.drawable.maps_poi_green, null));
+                    bitmapDescriptor = getMarkerIconFromDrawable(Objects.requireNonNull(ResourcesCompat.getDrawable(getResources(), R.drawable.maps_poi_green, null)));
                 }
             }
 

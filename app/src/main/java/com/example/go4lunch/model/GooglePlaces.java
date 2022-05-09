@@ -1,5 +1,7 @@
 package com.example.go4lunch.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -251,6 +253,7 @@ public class GooglePlaces {
             return Objects.hash(opening_hours, vicinity, user_ratings_total, types, scope, reference, rating, price_level, plus_code, place_id, photos, name, icon_mask_base_uri, icon_background_color, icon, geometry, business_status, website, formatted_phone_number, formatted_address);
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "Results{" +

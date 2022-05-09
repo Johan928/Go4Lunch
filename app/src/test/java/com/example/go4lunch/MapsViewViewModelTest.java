@@ -53,7 +53,7 @@ public class MapsViewViewModelTest {
                 .getLocationLiveData();
         Mockito.doReturn(places)
                 .when(nearbySearchRepository)
-                .getNearBySearchLiveData();
+                .getNearBySearch(location);
         Mockito.doReturn(selectedRestaurantsList)
                 .when(userRepository)
                 .getUserList();
@@ -75,17 +75,7 @@ public class MapsViewViewModelTest {
                 assertEquals(getDefaultMapsViewViewState(), liveData);
             }
         });
-        // WHEN
-     /*   LiveDataTestUtils.observeForTesting(listViewViewModel.getListViewLiveData(), listViewViewState -> {
-            // THEN
-            assertEquals(getDefaultListViewViewState(), listViewViewState);
 
-          *//*  verifyNoMoreInteractions(
-                    locationRepository,
-                    nearbySearchRepository,
-                    userRepository);*//*
-
-        });*/
     }
 
 

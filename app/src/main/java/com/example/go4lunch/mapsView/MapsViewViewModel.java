@@ -18,7 +18,7 @@ import java.util.List;
 public class MapsViewViewModel extends ViewModel {
 
     private static final String TAG = "123";
-    private final MediatorLiveData<MapsViewViewState> mMediator = new MediatorLiveData();
+    private final MediatorLiveData<MapsViewViewState> mMediator = new MediatorLiveData<>();
    private LiveData<List<GooglePlaces.Results>> places = new MutableLiveData<>();
 
 

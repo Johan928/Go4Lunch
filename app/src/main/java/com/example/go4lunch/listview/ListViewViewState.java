@@ -2,6 +2,8 @@ package com.example.go4lunch.listview;
 
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+
 import com.example.go4lunch.model.GooglePlaces;
 import com.example.go4lunch.user.User;
 
@@ -42,6 +44,7 @@ public class ListViewViewState {
         return Objects.hash(location, places, selectedRestaurantsList);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ListViewViewState{" +

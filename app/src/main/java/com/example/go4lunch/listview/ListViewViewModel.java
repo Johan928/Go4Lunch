@@ -18,7 +18,7 @@ import java.util.List;
 public class ListViewViewModel extends ViewModel {
 
     private static final String TAG = "999";
-    private final MediatorLiveData<ListViewViewState> mMediator = new MediatorLiveData();
+    private final MediatorLiveData<ListViewViewState> mMediator = new MediatorLiveData<>();
     private MapsAPI mapsAPI;
     private static final String SELECTED_RESTAURANT_FIELD = "selectedRestaurantPlaceId";
 
