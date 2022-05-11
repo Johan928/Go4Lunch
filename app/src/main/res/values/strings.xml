@@ -60,6 +60,7 @@
     <string name="not_decided_yet">\u0020 hasn\'t decided yet.</string>
     <string name="no_one_else_is_coming">No one else is coming</string>
     <string name="details_activity_back_button">details Activity back button</string>
-
+    <string name="time_for_lunch">Time for Lunch at \u0020</string>
+    <string name="workmates_joining">Workmates who join : \u0020</string>
 
 </resources>

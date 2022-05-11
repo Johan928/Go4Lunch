@@ -28,7 +28,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "10";
     private static final int NOTIFICATION_ID = 0;
 
-    private static final String UID_KEY = "UID";
     private String userId;
     private final UserRepository userRepository = UserRepository.getInstance();
     private String restaurantName;
@@ -36,7 +35,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     private String restaurantId;
     private final ArrayList<User> joiningWorkmatesList = new ArrayList<>();
     private List<User> userList;
-
+    private static final String sharedPrefFile = "com.example.Go4lunch";
+    private static final String UID_KEY = "UID";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -47,9 +47,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 User user = task.getResult().toObject(User.class);
                 assert user != null;
                 restaurantName = user.getSelectedRestaurantName();
+                Log.d(TAG, "updateSh: " + userId);
+                Log.d(TAG, "updateSh: " + restaurantName);
                 restaurantAddress = user.getSelectedRestaurantAddress();
                 restaurantId = user.getSelectedRestaurantPlaceId();
-
+                Log.d(TAG, "updateSh: " + restaurantId);
 
                 userRepository.getUserListInATask().addOnCompleteListener(task1 -> {
                     for (DocumentSnapshot ds : task1.getResult().getDocuments()) {
@@ -73,7 +75,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         StringBuilder stringBuilder = new StringBuilder();
         if (joiningWorkmatesList.size() > 0) {
             for (User user : joiningWorkmatesList) {
-                stringBuilder.append(user.getUsername());
+                stringBuilder.append(user.getUsername()).append("-");
             }
         } else {
             stringBuilder.append(context.getString(R.string.no_one_else_is_coming));
@@ -86,7 +88,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.bowl_icon)
-                .setContentTitle("Time for Lunch at " + restaurantName)
+                .setContentTitle(context.getString(R.string.time_for_lunch) + restaurantName)
                 .setContentText(context.getString(R.string.address) + " : " +  restaurantAddress)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText("\n" + context.getString(R.string.icon_workmates_text) + " : " + stringBuilder))
                 .setContentIntent(contentPendingIntent)
@@ -98,7 +100,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private String getUidFromSharedPreferences(Context context) {
-        String sharedPrefFile = "com.example.go4lunch";
         SharedPreferences sharedPreferences = context.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE);
         return sharedPreferences.getString(UID_KEY, "NOVALUE");
     }

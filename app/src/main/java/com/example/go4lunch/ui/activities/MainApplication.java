@@ -1,4 +1,4 @@
-package com.example.go4lunch;
+package com.example.go4lunch.ui.activities;
 
 import android.app.Application;
 

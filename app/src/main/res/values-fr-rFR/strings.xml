@@ -53,4 +53,6 @@
     <string name="not_decided_yet">\u0020n\'a pas encore choisi</string>
     <string name="no_one_else_is_coming">Personne d\'autre n\'y va</string>
     <string name="details_activity_back_button">bouton retour activité détails</string>
+    <string name="time_for_lunch">C\'est l\'heure de déjeuner  \\u0020</string>
+    <string name="workmates_joining">Collègues qui y vont : \\u0020</string>
 </resources>

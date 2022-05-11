@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     final int pageWorkmates = R.id.page_workmates;
     private static final String SELECTED_RESTAURANT_ID = "selectedRestaurantPlaceId";
     private static final String CHANNEL_ID = "10";
-    private ActionBarDrawerToggle toggle;
 
 
     @Override
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             case "FRAGMENT_LIST_TAG" :
                 try {
                     configureListViewFragment();
+                    showBottomNavigationBarAndHideLoginButton();
                     break;
                 } catch (IllegalAccessException | InstantiationException e) {
                     e.printStackTrace();
@@ -109,12 +109,20 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             case "FRAGMENT_WORKMATES_TAG" :
                 try {
                     configureWorkmatesFragment();
+                    showBottomNavigationBarAndHideLoginButton();
                     break;
                 } catch (IllegalAccessException | InstantiationException e) {
                     e.printStackTrace();
                 }
         }
 
+
+    }
+    private void showBottomNavigationBarAndHideLoginButton() {
+        if (UserManager.getInstance().isCurrentUserLogged()) {
+            binding.bottomNavigation.setVisibility(View.VISIBLE);
+            binding.logInButton.setVisibility(View.GONE);
+        }
 
     }
 
@@ -148,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                         showSnackBar(getString(R.string.connection_succeed));
                         userManager.createUser();
-                        //TODO get infos FROM FIRESTORE
+
                         updateUiWithUserData();
                         try {
                             if (userManager.isCurrentUserLogged()) {
@@ -203,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             binding.logInButton.setVisibility(View.VISIBLE);
             startSignInActivity();
         } else {
+            updateUiWithUserData();
             binding.bottomNavigation.setVisibility(View.VISIBLE);
             binding.logInButton.setVisibility(View.GONE);
             try {
@@ -313,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     private void configureDrawerLayout() {
         this.drawerLayout = binding.activityMainDrawerLayout;
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
@@ -360,7 +369,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
             if (user.getPhotoUrl() != null) {
                 setProfilePicture(user.getPhotoUrl(), header);
-                Log.d(TAG, "updateUiWithUserData: " + user.getPhotoUrl().toString());
             }
             setTextUserData(user, header);
         }

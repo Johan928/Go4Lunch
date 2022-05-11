@@ -11,8 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ import com.example.go4lunch.Adapter.DetailsAdapter;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityDetailsBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
+import com.example.go4lunch.model.Place;
 import com.example.go4lunch.receivers.AlarmReceiver;
 import com.example.go4lunch.user.User;
 import com.example.go4lunch.user.UserManager;
@@ -100,6 +103,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
                 binding.detailsActivityTextviewName.setText(detailsViewState.getPlace().getResult().getName());
                 binding.detailsActivityTexviewAddress.setText(detailsViewState.getPlace().getResult().getVicinity());
+                binding.detailsActivityOpeningHours.setText(getCurrentDayOpeningHours(detailsViewState.getPlace().getResult().getOpening_hours()));
                 binding.textViewCall.setTag(detailsViewState.getPlace().getResult().getFormatted_phone_number());
                 binding.textViewWebsite.setTag(detailsViewState.getPlace().getResult().getWebsite());
                 binding.textViewLike.setTag(placeId);
@@ -116,25 +120,44 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
     }
 
-    private void getUserFavoriteList() {
-        List<String> favoritesList = new ArrayList<>();
-     userManager.getUserData().addOnSuccessListener(documentSnapshot -> {
-    User user = documentSnapshot.toObject(User.class);
-         assert user != null;
-         if (user.getFavoriteRestaurantsList() != null && user.getFavoriteRestaurantsList().size() > 0 ) {
-        for (String s : user.getFavoriteRestaurantsList()) {
-            favoritesList.add(s);
+
+    private String getCurrentDayOpeningHours(Place.Opening_hours opening_hours) {
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int transposedDayOfWeek;
+        if (dayOfWeek == 1) {
+            transposedDayOfWeek = 6;
+        } else {
+            transposedDayOfWeek = dayOfWeek - 2;
         }
+        String openingDayDetails;
+        if (opening_hours.getWeekday_text().get(transposedDayOfWeek) != null) {
+            openingDayDetails = opening_hours.getWeekday_text().get(transposedDayOfWeek);
+        } else {
+            openingDayDetails = getResources().getString(R.string.error_unknown_error);
+        }
+
+        return openingDayDetails;
+
     }
 
-    if (favoritesList.contains(placeId)) {
-        binding.imageviewLikedStar.setVisibility(View.VISIBLE);
-        binding.textViewLike.setText(R.string.dislike);
-    } else {
-        binding.imageviewLikedStar.setVisibility(View.GONE);
-        binding.textViewLike.setText(R.string.like);
-    }
-     });
+    private void getUserFavoriteList() {
+        List<String> favoritesList = new ArrayList<>();
+        userManager.getUserData().addOnSuccessListener(documentSnapshot -> {
+            User user = documentSnapshot.toObject(User.class);
+            assert user != null;
+            if (user.getFavoriteRestaurantsList() != null && user.getFavoriteRestaurantsList().size() > 0) {
+                favoritesList.addAll(user.getFavoriteRestaurantsList());
+            }
+
+            if (favoritesList.contains(placeId)) {
+                binding.imageviewLikedStar.setVisibility(View.VISIBLE);
+                binding.textViewLike.setText(R.string.dislike);
+            } else {
+                binding.imageviewLikedStar.setVisibility(View.GONE);
+                binding.textViewLike.setText(R.string.like);
+            }
+        });
     }
 
     private void initRecyclerView(List<User> userList) {
@@ -294,8 +317,10 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
         Intent notifyIntent = new Intent(this, AlarmReceiver.class);
 
-        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
-                (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent notifyPendingIntent;
+
+            notifyPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_ID, notifyIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         if (alarmManager != null) {
@@ -316,19 +341,6 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         }
     }
 
-    private void cancelAlarm() {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
-
-        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
-        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
-                (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.cancel(notifyPendingIntent);
-
-        clearSharedPreferences();
-    }
-
     private void updateSharedPreferences() {
         if (UserManager.getInstance().getCurrentUser() != null) {
             sharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
@@ -339,7 +351,22 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
         }
     }
 
-    private void clearSharedPreferences() {
+    private void cancelAlarm() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+
+        Intent notifyIntent = new Intent(this, AlarmReceiver.class);
+        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast
+                (this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(notifyPendingIntent);
+
+        resetUidKeyInSharedPreferences();
+    }
+
+
+
+    private void resetUidKeyInSharedPreferences() {
         sharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
         SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
         preferencesEditor.putString(UID_KEY, "NOVALUE");
