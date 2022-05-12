@@ -90,7 +90,7 @@ public class UserRepository {
             User userToCreate = new User(uid, username, urlPicture);
 
             Task<DocumentSnapshot> userData = getUserData();
-            // If the user already exist in Firestore, we get his selectedRestaurantPlaceId
+            // If the user already exist in Firestore, we get his data and restore them
             userData.addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.contains(SELECTED_RESTAURANT_ID)) {
                     userToCreate.setSelectedRestaurantPlaceId((String) documentSnapshot.get(SELECTED_RESTAURANT_ID));
@@ -182,9 +182,6 @@ public class UserRepository {
 
     }
 
-   /* private void doGetUserJoiningList(String placeId) {
-        getUserJoiningList(placeId);
-    }*/
 
     public Task<Void> updateSelectedRestaurant(String placeId,String restaurantName,String restaurantAddress) {
 

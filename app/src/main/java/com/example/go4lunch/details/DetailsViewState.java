@@ -1,5 +1,7 @@
 package com.example.go4lunch.details;
 
+import androidx.annotation.NonNull;
+
 import com.example.go4lunch.model.Place;
 import com.example.go4lunch.user.User;
 
@@ -38,6 +40,7 @@ public class DetailsViewState {
         return Objects.hash(place, userList);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "DetailsViewState{" +

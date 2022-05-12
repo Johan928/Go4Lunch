@@ -1,5 +1,7 @@
 package com.example.go4lunch.user;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,6 +97,7 @@ public class User {
         return Objects.hash(uid, username, urlPicture, selectedRestaurantPlaceId, favoriteRestaurantsList, selectedRestaurantName, selectedRestaurantAddress);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "User{" +

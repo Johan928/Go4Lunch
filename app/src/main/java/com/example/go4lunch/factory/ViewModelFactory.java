@@ -20,7 +20,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
 
-    private static ViewModelFactory factory;
+    private static volatile ViewModelFactory factory;
 
     public static ViewModelFactory getInstance() {
 

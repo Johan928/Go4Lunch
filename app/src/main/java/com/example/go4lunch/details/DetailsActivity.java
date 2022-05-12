@@ -11,10 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -317,9 +315,7 @@ public class DetailsActivity extends AppCompatActivity implements EasyPermission
 
         Intent notifyIntent = new Intent(this, AlarmReceiver.class);
 
-        final PendingIntent notifyPendingIntent;
-
-            notifyPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_ID, notifyIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_ID, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
        final AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 

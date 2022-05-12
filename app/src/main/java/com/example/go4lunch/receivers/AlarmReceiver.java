@@ -13,9 +13,9 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.go4lunch.R;
-import com.example.go4lunch.repositories.UserRepository;
 import com.example.go4lunch.ui.activities.MainActivity;
 import com.example.go4lunch.user.User;
+import com.example.go4lunch.user.UserManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final int NOTIFICATION_ID = 0;
 
     private String userId;
-    private final UserRepository userRepository = UserRepository.getInstance();
+    private final UserManager userManager = UserManager.getInstance();
     private String restaurantName;
     private String restaurantAddress;
     private String restaurantId;
@@ -43,17 +43,16 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         userId = getUidFromSharedPreferences(context);
         if (!userId.equals("NOVALUE")) {
-            userRepository.getUserDataFromUid(userId).addOnCompleteListener(task -> {
+            userManager.getUserDataFromUid(userId).addOnCompleteListener(task -> {
                 User user = task.getResult().toObject(User.class);
                 assert user != null;
                 restaurantName = user.getSelectedRestaurantName();
-                Log.d(TAG, "updateSh: " + userId);
-                Log.d(TAG, "updateSh: " + restaurantName);
+
                 restaurantAddress = user.getSelectedRestaurantAddress();
                 restaurantId = user.getSelectedRestaurantPlaceId();
-                Log.d(TAG, "updateSh: " + restaurantId);
 
-                userRepository.getUserListInATask().addOnCompleteListener(task1 -> {
+
+                userManager.getUserListInATask().addOnCompleteListener(task1 -> {
                     for (DocumentSnapshot ds : task1.getResult().getDocuments()) {
                         if (restaurantId.equals(Objects.requireNonNull(ds.toObject(User.class)).getSelectedRestaurantPlaceId()) && !userId.equals(Objects.requireNonNull(ds.toObject(User.class)).getUid())) {
                             Log.d(TAG, "onComplete: " + Objects.requireNonNull(ds.toObject(User.class)).getUsername());
@@ -97,6 +96,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
 
         notificationManager.notify(NOTIFICATION_ID, builder.build());
+
+        userManager.updateSelectedRestaurant(null,null,null);
     }
 
     private String getUidFromSharedPreferences(Context context) {
