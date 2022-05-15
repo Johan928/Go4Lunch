@@ -1,7 +1,6 @@
 package com.example.go4lunch;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.location.Location;
 
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import Utils.LiveDataTestUtils;
+import utils.LiveDataTestUtils;
 
 public class ListViewViewModelTest {
     @Rule
@@ -67,18 +66,10 @@ public class ListViewViewModelTest {
     @Test
     public void nominalCase() {
         // WHEN
-        LiveDataTestUtils.observeForTesting(listViewViewModel.getListViewLiveData(), new LiveDataTestUtils.OnObservedListener<ListViewViewState>() {
-            @Override
-            public void onObserved(ListViewViewState listViewViewState) {
-                // THEN
-                assertEquals(ListViewViewModelTest.this.getDefaultListViewViewState(), listViewViewState);
+        LiveDataTestUtils.observeForTesting(listViewViewModel.getListViewLiveData(), listViewViewState -> {
+            // THEN
+            assertEquals(ListViewViewModelTest.this.getDefaultListViewViewState(), listViewViewState);
 
-          /*  verifyNoMoreInteractions(
-                    locationRepository,
-                    nearbySearchRepository,
-                    userRepository);*/
-
-            }
         });
     }
 

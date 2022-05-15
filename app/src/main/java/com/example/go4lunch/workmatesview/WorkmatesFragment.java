@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.go4lunch.Adapter.WorkmatesAdapter;
+import com.example.go4lunch.adapter.WorkmatesAdapter;
 import com.example.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.model.GooglePlaces;

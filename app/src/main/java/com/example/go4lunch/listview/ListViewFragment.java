@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.go4lunch.Adapter.ListViewAdapter;
+import com.example.go4lunch.adapter.ListViewAdapter;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
@@ -101,12 +101,6 @@ public class ListViewFragment extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
         });
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
 
     }
 

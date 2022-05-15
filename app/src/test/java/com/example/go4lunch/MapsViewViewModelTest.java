@@ -1,15 +1,12 @@
 package com.example.go4lunch;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import android.location.Location;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.go4lunch.listview.ListViewViewModel;
-import com.example.go4lunch.listview.ListViewViewState;
 import com.example.go4lunch.mapsView.MapsViewViewModel;
 import com.example.go4lunch.mapsView.MapsViewViewState;
 import com.example.go4lunch.model.GooglePlaces;
@@ -27,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import Utils.LiveDataTestUtils;
+import utils.LiveDataTestUtils;
 
 public class MapsViewViewModelTest {
     @Rule
@@ -69,12 +66,7 @@ public class MapsViewViewModelTest {
     @Test
     public void nominalCase() {
 
-        LiveDataTestUtils.observeForTesting(mapsViewViewModel.getMapsViewLiveData(), new LiveDataTestUtils.OnObservedListener<MapsViewViewState>() {
-            @Override
-            public void onObserved(MapsViewViewState liveData) {
-                assertEquals(getDefaultMapsViewViewState(), liveData);
-            }
-        });
+        LiveDataTestUtils.observeForTesting(mapsViewViewModel.getMapsViewLiveData(), liveData -> assertEquals(getDefaultMapsViewViewState(), liveData));
 
     }
 

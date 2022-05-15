@@ -1,5 +1,6 @@
 package com.example.go4lunch.repositories;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
@@ -80,6 +81,8 @@ public class UserRepository {
 
 
     // Create User in Firestore
+    @SuppressWarnings("SingleStatementInBlock")
+    @SuppressLint("Unchecked")
     public void createUser() {
         FirebaseUser user = getCurrentUser();
         if (user != null) {
@@ -96,11 +99,12 @@ public class UserRepository {
                     userToCreate.setSelectedRestaurantPlaceId((String) documentSnapshot.get(SELECTED_RESTAURANT_ID));
                 }
                 if (documentSnapshot.contains(FAVORITES_RESTAURANTS_FIELD)) {
-                    userToCreate.setFavoriteRestaurantsList((ArrayList<String>) documentSnapshot.get(FAVORITES_RESTAURANTS_FIELD) );
+                    userToCreate.setFavoriteRestaurantsList((ArrayList<String>) documentSnapshot.get(FAVORITES_RESTAURANTS_FIELD));
                 }
                 if (documentSnapshot.contains(SELECTED_RESTAURANT_NAME)) {
                     userToCreate.setSelectedRestaurantName((String) documentSnapshot.get(SELECTED_RESTAURANT_NAME));
-                }if (documentSnapshot.contains(SELECTED_RESTAURANT_ADDRESS)) {
+                }
+                if (documentSnapshot.contains(SELECTED_RESTAURANT_ADDRESS)) {
                     userToCreate.setSelectedRestaurantAddress((String) documentSnapshot.get(SELECTED_RESTAURANT_ADDRESS));
                 }
 
