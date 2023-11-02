@@ -1,4 +1,4 @@
-package com.example.go4lunch.Adapter;
+package com.example.go4lunch.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

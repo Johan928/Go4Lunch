@@ -1,9 +1,6 @@
 package com.example.go4lunch;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import android.util.Log;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
@@ -25,7 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.List;
 
-import Utils.LiveDataTestUtils;
+import utils.LiveDataTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DetailsViewViewModelTest {
@@ -61,13 +58,7 @@ public class DetailsViewViewModelTest {
 
     @Test
     public void nominalCase() {
-        LiveDataTestUtils.observeForTesting(detailsViewModel.getDetailsViewLiveData("PlaceID"), new LiveDataTestUtils.OnObservedListener<DetailsViewState>() {
-            @Override
-            public void onObserved(DetailsViewState detailsViewState) {
-                assertEquals(getDefaultDetailsViewState(),detailsViewState);
-
-            }
-        });
+        LiveDataTestUtils.observeForTesting(detailsViewModel.getDetailsViewLiveData("PlaceID"), detailsViewState -> assertEquals(getDefaultDetailsViewState(),detailsViewState));
 
     }
 

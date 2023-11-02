@@ -1,4 +1,4 @@
-package com.example.go4lunch.Adapter;
+package com.example.go4lunch.adapter;
 
 import static com.example.go4lunch.BuildConfig.MAPS_API_KEY;
 
@@ -36,7 +36,7 @@ import java.util.List;
 public class ListViewAdapter extends ListAdapter<GooglePlaces.Results, ListViewAdapter.ViewHolder> {
 
     private final Context context;
-    ArrayList<GooglePlaces.Results> googlePlacesList;
+    final ArrayList<GooglePlaces.Results> googlePlacesList;
     private final LatLng myPosition;
     private MapsAPI mapsAPI;
     private PlaceRepository placeRepository;

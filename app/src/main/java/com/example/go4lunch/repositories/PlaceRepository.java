@@ -17,7 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PlaceRepository {
-    MapsAPI mapsAPI;
+    final MapsAPI mapsAPI;
     MutableLiveData<Place> placeMutableLiveData = new MutableLiveData<>();
     private int userCounter;
 

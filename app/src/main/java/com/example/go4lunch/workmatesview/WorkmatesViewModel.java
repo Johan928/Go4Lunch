@@ -11,21 +11,16 @@ import com.example.go4lunch.user.User;
 import java.util.List;
 
 public class WorkmatesViewModel extends ViewModel {
-    private final UserRepository userRepository;
     private NearbySearchRepository nearbySearchRepository;
-    private MediatorLiveData<WorkmatesViewState> mMediator = new MediatorLiveData();
-
-    private final static String TAG = "666";
-
+    private final MediatorLiveData<WorkmatesViewState> mMediator = new MediatorLiveData<>();
 
 
     public WorkmatesViewModel(UserRepository userRepository) {
-        this.userRepository = userRepository;
 
         LiveData<List<User>> userList = userRepository.getUserList();
 
         mMediator.addSource(userList,
-                userList1 -> combine(userList1));
+                this::combine);
 
 
 

@@ -1,7 +1,6 @@
 package com.example.go4lunch.workmatesview;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.go4lunch.Adapter.WorkmatesAdapter;
+import com.example.go4lunch.adapter.WorkmatesAdapter;
 import com.example.go4lunch.databinding.FragmentWorkmatesBinding;
 import com.example.go4lunch.factory.ViewModelFactory;
 import com.example.go4lunch.model.GooglePlaces;
@@ -28,15 +27,9 @@ import java.util.List;
 public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding binding;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
-    private WorkmatesAdapter adapter;
     private List<GooglePlaces.Results> googlePlaces;
     private final List<User> userList = new ArrayList<>();
     private List<Place> placesList;
-    private LiveData<WorkmatesViewState> liveData;
-    private WorkmatesViewModel workmatesViewModel;
-    private final static String TAG = "777";
 
     public WorkmatesFragment() {
         // Required empty public constructor
@@ -48,11 +41,11 @@ public class WorkmatesFragment extends Fragment {
 
 
     private void initRecyclerview() {
-        recyclerView = binding.recyclerViewWorkmates;
-        layoutManager = new LinearLayoutManager(getContext());
+        RecyclerView recyclerView = binding.recyclerViewWorkmates;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        adapter = new WorkmatesAdapter(getContext(), userList);
+        WorkmatesAdapter adapter = new WorkmatesAdapter(getContext(), userList);
         recyclerView.setAdapter(adapter);
 
 
@@ -73,14 +66,14 @@ public class WorkmatesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        workmatesViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(WorkmatesViewModel.class);
-        liveData = workmatesViewModel.getWorkmatesViewState();
+        WorkmatesViewModel workmatesViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(WorkmatesViewModel.class);
+        LiveData<WorkmatesViewState> liveData = workmatesViewModel.getWorkmatesViewState();
         liveData.observe(getViewLifecycleOwner(), workmatesViewState -> {
             if (workmatesViewState.getUserList() != null) {
                 userList.clear();
                 for (User user : workmatesViewState.getUserList()) {
                     if (!user.getUid().equals(UserManager.getInstance().getCurrentUser().getUid())) {
-                        Log.d(TAG, "onChanged: " + user.getUid());
+
                         userList.add(user);
                     }
                 }
